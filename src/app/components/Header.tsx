@@ -20,7 +20,7 @@ export default function Header() {
             </p>
           </div>
           <div className="relative">
-            {loading ? null : user ? (
+            {user ? (
               <div>
                 <button
                   onClick={() => setShowMenu(!showMenu)}

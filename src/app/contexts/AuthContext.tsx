@@ -37,12 +37,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 初期セッション取得
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      setLoading(false);
-    });
+    // 初期セッション取得（失敗時もloadingを解除）
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: s } }) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+
+    // 3秒経ってもloadingが解除されない場合のフォールバック
+    const timeout = setTimeout(() => {
+      setLoading((prev) => {
+        if (prev) return false;
+        return prev;
+      });
+    }, 3000);
 
     // リスナー
     const {
@@ -53,7 +66,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
