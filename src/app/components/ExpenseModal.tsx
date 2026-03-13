@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Category, CATEGORY_LABELS, PricePost } from "../types";
-import { addPost, getPostsByDate, searchPosts } from "../storage";
+import { addPost, getPostsByDate, deletePost, searchPosts } from "../storage";
 import { useSound } from "../hooks/useSound";
 
 interface Props {
@@ -19,6 +19,8 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
   const [storeName, setStoreName] = useState("");
   const [category, setCategory] = useState<Category>("food");
   const [saved, setSaved] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { play } = useSound();
   const [comparison, setComparison] = useState<{
     enteredPrice: number;
@@ -27,6 +29,7 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
     savings: number;
   } | null>(null);
 
+  void refreshKey;
   const existing = getPostsByDate(date);
 
   const dateLabel = new Date(date + "T00:00:00").toLocaleDateString("ja-JP", {
@@ -218,10 +221,10 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
               {existing.map((post) => (
                 <li
                   key={post.id}
-                  className="py-2 flex justify-between items-center"
+                  className="py-2 flex justify-between items-center gap-2"
                 >
-                  <div>
-                    <p className="text-sm font-medium">{post.productName}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{post.productName}</p>
                     <p className="text-xs text-muted">
                       {post.storeName}
                       {post.category
@@ -229,12 +232,54 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
                         : ""}
                     </p>
                   </div>
-                  <p className="text-base font-bold text-primary">
+                  <p className="text-base font-bold text-primary shrink-0">
                     ¥{post.price.toLocaleString()}
                   </p>
+                  <button
+                    onClick={() => setDeleteTarget(post.id)}
+                    className="text-muted hover:text-red-500 transition-colors shrink-0 p-1"
+                    title="削除"
+                  >
+                    🗑️
+                  </button>
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* 削除確認モーダル */}
+        {deleteTarget && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setDeleteTarget(null)} />
+            <div className="relative bg-card-bg rounded-2xl shadow-xl p-5 w-full max-w-xs animate-slide-up">
+              <p className="text-sm font-bold text-center mb-2">本当に削除しますか？</p>
+              <p className="text-xs text-muted text-center mb-4">
+                この記録は元に戻せません
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteTarget(null)}
+                  className="flex-1 py-2.5 rounded-xl border border-border text-sm font-medium
+                             hover:bg-background transition-colors"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={() => {
+                    play("error");
+                    deletePost(deleteTarget);
+                    setDeleteTarget(null);
+                    setRefreshKey((k) => k + 1);
+                    onSaved();
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium
+                             hover:bg-red-600 active:scale-95 transition-all"
+                >
+                  削除する
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

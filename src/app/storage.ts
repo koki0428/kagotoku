@@ -44,6 +44,11 @@ export function addPost(
   return newPost;
 }
 
+export function deletePost(id: string): void {
+  const posts = getPosts().filter((p) => p.id !== id);
+  savePosts(posts);
+}
+
 export function searchPosts(productName: string): PricePost[] {
   return getPosts().filter((p) =>
     p.productName.toLowerCase().includes(productName.toLowerCase())
