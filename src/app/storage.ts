@@ -7,6 +7,7 @@ import {
   MonthlyBudget,
   Favorite,
   PointEntry,
+  ShoppingItem,
 } from "./types";
 
 const STORAGE_KEY = "kagotoku_prices";
@@ -16,6 +17,7 @@ const FAVORITES_KEY = "kagotoku_favorites";
 const ONBOARDING_KEY = "kagotoku_onboarded";
 const POINTS_HISTORY_KEY = "kagotoku_points_history";
 const WELCOME_BONUS_KEY = "kagotoku_welcome_bonus";
+const SHOPPING_LIST_KEY = "kagotoku_shopping_list";
 
 // ===== 投稿 CRUD =====
 
@@ -608,4 +610,58 @@ export function getNearbyStores(
   }
 
   return Array.from(storeMap.values());
+}
+
+// ===== 買い物リスト =====
+
+export function getShoppingList(): ShoppingItem[] {
+  if (typeof window === "undefined") return [];
+  const raw = localStorage.getItem(SHOPPING_LIST_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveShoppingList(items: ShoppingItem[]): void {
+  localStorage.setItem(SHOPPING_LIST_KEY, JSON.stringify(items));
+}
+
+export function addShoppingItem(productName: string): ShoppingItem {
+  const items = getShoppingList();
+  const item: ShoppingItem = {
+    id: crypto.randomUUID(),
+    productName,
+    completed: false,
+    addedAt: new Date().toISOString(),
+    completedAt: null,
+  };
+  items.unshift(item);
+  saveShoppingList(items);
+  addPoints(2, false);
+  return item;
+}
+
+export function toggleShoppingItem(id: string): void {
+  const items = getShoppingList();
+  const item = items.find((i) => i.id === id);
+  if (item) {
+    item.completed = !item.completed;
+    item.completedAt = item.completed ? new Date().toISOString() : null;
+    saveShoppingList(items);
+  }
+}
+
+export function deleteShoppingItem(id: string): void {
+  const items = getShoppingList().filter((i) => i.id !== id);
+  saveShoppingList(items);
+}
+
+/** 購入済みアイテムを24時間後に自動削除 */
+export function cleanupCompletedItems(): number {
+  const items = getShoppingList();
+  const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+  const fresh = items.filter(
+    (i) => !i.completed || !i.completedAt || new Date(i.completedAt).getTime() > cutoff
+  );
+  const removed = items.length - fresh.length;
+  if (removed > 0) saveShoppingList(fresh);
+  return removed;
 }

@@ -93,3 +93,13 @@ export interface Favorite {
   targetPrice: number | null; // 目標価格
   addedAt: string;
 }
+
+// --- 買い物リスト ---
+
+export interface ShoppingItem {
+  id: string;
+  productName: string;
+  completed: boolean;
+  addedAt: string;
+  completedAt: string | null;
+}

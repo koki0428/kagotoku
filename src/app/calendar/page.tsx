@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useRef } from "react";
 import Header from "../components/Header";
 import ExpenseModal from "../components/ExpenseModal";
 import PieChart from "../components/PieChart";
+import BarChart from "../components/BarChart";
 import ReceiptModal from "../components/ReceiptModal";
 import Toast from "../components/Toast";
 import {
@@ -96,6 +97,30 @@ export default function CalendarPage() {
     },
     [currentYear, currentMonth, refreshKey]
   );
+
+  // 先月の支出合計
+  const prevMonthTotal = useMemo(() => {
+    void refreshKey;
+    const pm = currentMonth === 1 ? 12 : currentMonth - 1;
+    const py = currentMonth === 1 ? currentYear - 1 : currentYear;
+    const summaries = getDailySummaries(py, pm);
+    return summaries.reduce((s, d) => s + d.total, 0);
+  }, [currentYear, currentMonth, refreshKey]);
+
+  // 過去6ヶ月の支出データ（棒グラフ用）
+  const past6Months = useMemo(() => {
+    void refreshKey;
+    const result: { label: string; value: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      let m = currentMonth - i;
+      let y = currentYear;
+      while (m <= 0) { m += 12; y--; }
+      const summaries = getDailySummaries(y, m);
+      const total = summaries.reduce((s, d) => s + d.total, 0);
+      result.push({ label: `${m}月`, value: total });
+    }
+    return result;
+  }, [currentYear, currentMonth, refreshKey]);
 
   // 予算
   const budget = useMemo(() => {
@@ -530,11 +555,44 @@ export default function CalendarPage() {
               </div>
             </section>
 
-            {/* カテゴリ別円グラフ */}
+            {/* 先月比較カード */}
+            {(monthTotal > 0 || prevMonthTotal > 0) && (
+              <section className={`rounded-2xl shadow-sm border p-4 text-center ${
+                prevMonthTotal > 0 && monthTotal <= prevMonthTotal
+                  ? "bg-gradient-to-r from-green-50 to-emerald-50 border-accent/30"
+                  : prevMonthTotal > 0
+                    ? "bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200"
+                    : "bg-card-bg border-border"
+              }`}>
+                <h2 className="font-bold text-sm mb-2">
+                  📈 先月との比較
+                </h2>
+                {prevMonthTotal > 0 ? (
+                  <>
+                    <p className={`text-2xl font-bold ${
+                      monthTotal <= prevMonthTotal ? "text-accent" : "text-orange-600"
+                    }`}>
+                      {monthTotal <= prevMonthTotal
+                        ? `¥${(prevMonthTotal - monthTotal).toLocaleString()} 節約！`
+                        : `¥${(monthTotal - prevMonthTotal).toLocaleString()} 多く使用`}
+                    </p>
+                    <p className="text-xs text-muted mt-1">
+                      先月: ¥{prevMonthTotal.toLocaleString()} → 今月: ¥{monthTotal.toLocaleString()}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-muted">
+                    先月のデータがありません
+                  </p>
+                )}
+              </section>
+            )}
+
+            {/* カテゴリ別ドーナツグラフ */}
             {categorySummary.length > 0 && (
               <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
                 <h2 className="font-bold text-base mb-3">
-                  📊 {currentMonth}月 カテゴリ別
+                  🍩 {currentMonth}月 カテゴリ別
                 </h2>
                 <div className="flex justify-center">
                   <PieChart
@@ -545,6 +603,16 @@ export default function CalendarPage() {
                     }))}
                   />
                 </div>
+              </section>
+            )}
+
+            {/* 過去6ヶ月の支出推移 */}
+            {past6Months.some((m) => m.value > 0) && (
+              <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
+                <h2 className="font-bold text-base mb-3">
+                  📊 支出推移（過去6ヶ月）
+                </h2>
+                <BarChart data={past6Months} height={140} />
               </section>
             )}
           </>

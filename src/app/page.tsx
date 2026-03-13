@@ -23,6 +23,7 @@ import Toast from "./components/Toast";
 import UserBadge from "./components/UserBadge";
 import PushNotificationBanner from "./components/PushNotificationBanner";
 import SoundToggle from "./components/SoundToggle";
+import BarcodeScanner from "./components/BarcodeScanner";
 import { useSound } from "./hooks/useSound";
 
 export default function Home() {
@@ -44,6 +45,7 @@ export default function Home() {
   const [toastMsg, setToastMsg] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [adFree, setAdFree] = useState(false);
+  const [showBarcode, setShowBarcode] = useState(false);
   const cameraRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { play } = useSound();
@@ -90,6 +92,20 @@ export default function Home() {
     void refreshKey;
     return getRecentPosts(8);
   }, [refreshKey]);
+
+  // URL の ?q= パラメータで自動検索（買い物リストからの遷移）
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) {
+      setQuery(q);
+      setPosts(searchPosts(q));
+      setAmazonResults(searchAmazon(q));
+      setHasSearched(true);
+      // URLからパラメータを削除
+      window.history.replaceState({}, "", "/");
+    }
+  }, []);
 
   const handleSearch = useCallback(() => {
     if (!query.trim()) return;
@@ -145,6 +161,24 @@ export default function Home() {
       }, 100);
     },
     []
+  );
+
+  const handleBarcodeDetected = useCallback(
+    (code: string, productName: string | null) => {
+      setShowBarcode(false);
+      if (productName) {
+        play("receipt");
+        setToastMsg(`📦 ${productName}（JAN: ${code}）`);
+        setShowToast(true);
+        executeSearchAndScroll(productName);
+      } else {
+        play("search");
+        setToastMsg(`バーコード: ${code}（商品名が見つかりませんでした）`);
+        setShowToast(true);
+        setQuery(code);
+      }
+    },
+    [play, executeSearchAndScroll]
   );
 
   /** レシートの商品一覧から最大の節約効果がある商品を選ぶ */
@@ -359,6 +393,14 @@ export default function Home() {
               )}
             </button>
             <button
+              onClick={() => setShowBarcode(true)}
+              className="border border-border bg-background px-3 py-3 rounded-xl
+                         hover:border-primary hover:text-primary transition-colors"
+              title="バーコードスキャン"
+            >
+              <span className="text-lg">▦</span>
+            </button>
+            <button
               onClick={handleSearch}
               className="bg-primary text-white px-5 py-3 rounded-xl font-medium
                          hover:bg-primary-hover active:scale-95 transition-all shadow-sm"
@@ -564,6 +606,14 @@ export default function Home() {
           </>
         )}
       </main>
+
+      {/* バーコードスキャナー */}
+      {showBarcode && (
+        <BarcodeScanner
+          onDetected={handleBarcodeDetected}
+          onClose={() => setShowBarcode(false)}
+        />
+      )}
     </div>
   );
 }
