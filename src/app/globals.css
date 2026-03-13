@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  --background: #faf7f2;
+  --foreground: #333333;
+  --primary: #e8725a;
+  --primary-hover: #d4604a;
+  --accent: #4caf50;
+  --card-bg: #ffffff;
+  --border: #e0d8cf;
+  --muted: #888888;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-card-bg: var(--card-bg);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    "Yu Gothic", "Meiryo", sans-serif;
+}
+
+/* ポイント獲得アニメーション */
+@keyframes pointsFloat {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  20% { opacity: 1; transform: translateY(-10px) scale(1.1); }
+  40% { transform: translateY(-20px) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.9); }
+}
+.animate-points-float {
+  animation: pointsFloat 2s ease-out forwards;
+}
+
+/* モーダル */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+.animate-slide-up {
+  animation: slideUp 0.25s ease-out;
+}
+
+/* ヒーローグラデーション */
+.hero-gradient {
+  background: linear-gradient(135deg, #e8725a 0%, #f4a261 50%, #e8725a 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* フィードアニメーション */
+@keyframes feedSlideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-feed-in {
+  animation: feedSlideIn 0.3s ease-out;
+}
+
+/* オンボーディングスライド */
+@keyframes onboardFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-onboard {
+  animation: onboardFadeIn 0.4s ease-out;
+}
+
+/* アラートパルス */
+@keyframes alertPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.animate-alert-pulse {
+  animation: alertPulse 1.5s ease-in-out infinite;
+}
