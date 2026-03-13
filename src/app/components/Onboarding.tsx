@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { completeOnboarding, setNickname } from "../storage";
+import { completeOnboarding, setNickname, grantWelcomeBonus } from "../storage";
 
 const STEPS = [
   {
@@ -39,11 +39,13 @@ export default function Onboarding({ onComplete }: Props) {
       setNickname(nickname.trim());
     }
     completeOnboarding();
+    grantWelcomeBonus();
     onComplete();
   };
 
   const handleSkip = () => {
     completeOnboarding();
+    grantWelcomeBonus();
     onComplete();
   };
 

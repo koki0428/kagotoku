@@ -25,6 +25,7 @@ export default function UserBadge({
   const [name, setName] = useState(profile.nickname);
   const [showModal, setShowModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showHowTo, setShowHowTo] = useState(false);
   const [adFreeActive, setAdFreeActive] = useState(false);
   const [remainingDays, setRemainingDays] = useState(0);
   const [validPoints, setValidPoints] = useState(0);
@@ -201,6 +202,44 @@ export default function UserBadge({
             >
               🎁 広告非表示 適用中
             </button>
+          )}
+        </div>
+
+        {/* ポイントの貯め方 */}
+        <div className="mt-3 pt-3 border-t border-border">
+          <button
+            onClick={() => setShowHowTo(!showHowTo)}
+            className="w-full flex items-center justify-between text-xs text-muted
+                       hover:text-primary transition-colors"
+          >
+            <span>ポイントの貯め方</span>
+            <span className={`transition-transform ${showHowTo ? "rotate-180" : ""}`}>
+              ▼
+            </span>
+          </button>
+
+          {showHowTo && (
+            <ul className="mt-2 space-y-1.5">
+              {[
+                { icon: "📍", label: "価格を投稿する", pts: 10 },
+                { icon: "📰", label: "チラシを投稿する", pts: 50 },
+                { icon: "🧾", label: "レシートを登録する", pts: 20 },
+                { icon: "💛", label: "お気に入り商品を登録する", pts: 5 },
+                { icon: "🔥", label: "連続ログイン（毎日）", pts: 3 },
+                { icon: "🎉", label: "初回登録ボーナス", pts: 100 },
+              ].map((item) => (
+                <li
+                  key={item.label}
+                  className="flex items-center justify-between bg-background rounded-lg px-3 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{item.icon}</span>
+                    <span className="text-xs font-medium">{item.label}</span>
+                  </div>
+                  <span className="text-xs font-bold text-primary">+{item.pts}pt</span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 

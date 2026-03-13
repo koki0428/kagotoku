@@ -15,6 +15,7 @@ const BUDGET_KEY = "kagotoku_budgets";
 const FAVORITES_KEY = "kagotoku_favorites";
 const ONBOARDING_KEY = "kagotoku_onboarded";
 const POINTS_HISTORY_KEY = "kagotoku_points_history";
+const WELCOME_BONUS_KEY = "kagotoku_welcome_bonus";
 
 // ===== 投稿 CRUD =====
 
@@ -160,10 +161,10 @@ export function getExpiredPointsTotal(): number {
     .reduce((sum, e) => sum + (e.amount - e.consumed), 0);
 }
 
-export function addPoints(pts: number): void {
+export function addPoints(pts: number, incrementPostCount: boolean = true): void {
   migratePointsIfNeeded();
   const p = getProfile();
-  p.postCount += 1;
+  if (incrementPostCount) p.postCount += 1;
   p.points = getValidPoints() + pts;
   saveProfile(p);
 
@@ -181,6 +182,15 @@ export function addPoints(pts: number): void {
   const entries = getPointEntries();
   entries.push(entry);
   savePointEntries(entries);
+}
+
+/** ウェルカムボーナス（初回のみ100pt） */
+export function grantWelcomeBonus(): boolean {
+  if (typeof window === "undefined") return false;
+  if (localStorage.getItem(WELCOME_BONUS_KEY) === "true") return false;
+  addPoints(100, false);
+  localStorage.setItem(WELCOME_BONUS_KEY, "true");
+  return true;
 }
 
 /** FIFO順（古い順）でポイントを消費する */
@@ -379,6 +389,7 @@ export function addFavorite(productName: string): Favorite {
   };
   favs.unshift(fav);
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+  addPoints(5, false);
   return fav;
 }
 
