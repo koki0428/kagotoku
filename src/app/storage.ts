@@ -18,6 +18,7 @@ const FAVORITES_KEY = "kagotoku_favorites";
 const ONBOARDING_KEY = "kagotoku_onboarded";
 const POINTS_HISTORY_KEY = "kagotoku_points_history";
 const WELCOME_BONUS_KEY = "kagotoku_welcome_bonus";
+const DAILY_LOGIN_KEY = "kagotoku_daily_login";
 const SHOPPING_LIST_KEY = "kagotoku_shopping_list";
 
 // ===== 投稿 CRUD =====
@@ -210,6 +211,29 @@ export function grantWelcomeBonus(): boolean {
   addPoints(100, false);
   localStorage.setItem(WELCOME_BONUS_KEY, "true");
   return true;
+}
+
+/** ウェルカムボーナス取得済みかどうか */
+export function isWelcomeBonusGranted(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(WELCOME_BONUS_KEY) === "true";
+}
+
+/** デイリーログインボーナス（1日1回3pt） */
+export function grantDailyLogin(): boolean {
+  if (typeof window === "undefined") return false;
+  const today = new Date().toISOString().slice(0, 10);
+  if (localStorage.getItem(DAILY_LOGIN_KEY) === today) return false;
+  addPoints(3, false);
+  localStorage.setItem(DAILY_LOGIN_KEY, today);
+  return true;
+}
+
+/** 本日のデイリーログインボーナス取得済みかどうか */
+export function isDailyLoginGranted(): boolean {
+  if (typeof window === "undefined") return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return localStorage.getItem(DAILY_LOGIN_KEY) === today;
 }
 
 /** FIFO順（古い順）でポイントを消費する */

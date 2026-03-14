@@ -12,9 +12,13 @@ import {
   getValidPoints,
   getValidPointEntries,
   getExpiringSoonEntries,
+  grantDailyLogin,
+  isDailyLoginGranted,
+  isWelcomeBonusGranted,
 } from "../storage";
 import type { PointEntry } from "../types";
 import { useSound } from "../hooks/useSound";
+import { useRouter } from "next/navigation";
 
 export default function UserBadge({
   onRedeem,
@@ -32,7 +36,10 @@ export default function UserBadge({
   const [validPoints, setValidPoints] = useState(0);
   const [validEntries, setValidEntries] = useState<PointEntry[]>([]);
   const [expiringSoon, setExpiringSoon] = useState<PointEntry[]>([]);
+  const [dailyDone, setDailyDone] = useState(false);
+  const [welcomeDone, setWelcomeDone] = useState(false);
   const { play } = useSound();
+  const router = useRouter();
 
   const refresh = () => {
     setProfile(getProfile());
@@ -41,6 +48,8 @@ export default function UserBadge({
     setValidPoints(getValidPoints());
     setValidEntries(getValidPointEntries());
     setExpiringSoon(getExpiringSoonEntries());
+    setDailyDone(isDailyLoginGranted());
+    setWelcomeDone(isWelcomeBonusGranted());
   };
 
   useEffect(() => {
@@ -223,25 +232,108 @@ export default function UserBadge({
 
           {showHowTo && (
             <ul className="mt-2 space-y-1.5">
-              {[
-                { icon: "📍", label: "価格を投稿する", pts: 10 },
-                { icon: "📰", label: "チラシを投稿する", pts: 50 },
-                { icon: "🧾", label: "レシートを登録する", pts: 20 },
-                { icon: "💛", label: "お気に入り商品を登録する", pts: 5 },
-                { icon: "🔥", label: "連続ログイン（毎日）", pts: 3 },
-                { icon: "🎉", label: "初回登録ボーナス", pts: 100 },
-              ].map((item) => (
-                <li
-                  key={item.label}
-                  className="flex items-center justify-between bg-background rounded-lg px-3 py-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">{item.icon}</span>
-                    <span className="text-xs font-medium">{item.label}</span>
-                  </div>
-                  <span className="text-xs font-bold text-primary">+{item.pts}pt</span>
-                </li>
-              ))}
+              {/* 価格を投稿する */}
+              <li
+                onClick={() => router.push("/")}
+                className="flex items-center justify-between bg-background rounded-lg px-3 py-2
+                           cursor-pointer hover:bg-primary/5 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">📍</span>
+                  <span className="text-xs font-medium">価格を投稿する</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-bold text-primary">+10pt</span>
+                  <span className="text-[10px] text-muted">›</span>
+                </div>
+              </li>
+              {/* チラシを投稿する */}
+              <li
+                onClick={() => router.push("/flyer")}
+                className="flex items-center justify-between bg-background rounded-lg px-3 py-2
+                           cursor-pointer hover:bg-primary/5 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">📰</span>
+                  <span className="text-xs font-medium">チラシを投稿する</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-bold text-primary">+50pt</span>
+                  <span className="text-[10px] text-muted">›</span>
+                </div>
+              </li>
+              {/* レシートを登録する */}
+              <li
+                onClick={() => router.push("/calendar")}
+                className="flex items-center justify-between bg-background rounded-lg px-3 py-2
+                           cursor-pointer hover:bg-primary/5 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🧾</span>
+                  <span className="text-xs font-medium">レシートを登録する</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-bold text-primary">+20pt</span>
+                  <span className="text-[10px] text-muted">›</span>
+                </div>
+              </li>
+              {/* お気に入り商品を登録する */}
+              <li
+                onClick={() => router.push("/favorites")}
+                className="flex items-center justify-between bg-background rounded-lg px-3 py-2
+                           cursor-pointer hover:bg-primary/5 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">💛</span>
+                  <span className="text-xs font-medium">お気に入り商品を登録する</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-bold text-primary">+5pt</span>
+                  <span className="text-[10px] text-muted">›</span>
+                </div>
+              </li>
+              {/* 連続ログイン */}
+              <li
+                onClick={() => {
+                  if (!dailyDone) {
+                    const granted = grantDailyLogin();
+                    if (granted) {
+                      play("coin");
+                      refresh();
+                      onRedeem?.();
+                    }
+                  }
+                }}
+                className={`flex items-center justify-between rounded-lg px-3 py-2 transition-colors ${
+                  dailyDone
+                    ? "bg-border/40 opacity-60"
+                    : "bg-background cursor-pointer hover:bg-primary/5"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🔥</span>
+                  <span className="text-xs font-medium">
+                    連続ログイン（毎日）
+                    {dailyDone && <span className="text-[10px] text-accent ml-1">✓ 取得済み</span>}
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-primary">+3pt</span>
+              </li>
+              {/* 初回登録ボーナス */}
+              <li
+                className={`flex items-center justify-between rounded-lg px-3 py-2 ${
+                  welcomeDone ? "bg-border/40 opacity-60" : "bg-background"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🎉</span>
+                  <span className="text-xs font-medium">
+                    初回登録ボーナス
+                    {welcomeDone && <span className="text-[10px] text-accent ml-1">✓ 取得済み</span>}
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-primary">+100pt</span>
+              </li>
             </ul>
           )}
         </div>

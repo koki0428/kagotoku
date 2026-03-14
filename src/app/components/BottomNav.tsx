@@ -7,8 +7,8 @@ import { getAlertCount } from "../storage";
 
 const tabs = [
   { href: "/", label: "ホーム", icon: "🏠" },
+  { href: "/flyer", label: "チラシ", icon: "📰" },
   { href: "/calendar", label: "家計簿", icon: "📅" },
-  { href: "/shopping-list", label: "リスト", icon: "📝" },
   { href: "/favorites", label: "お気に入り", icon: "💛", hasAlert: true },
   { href: "/map", label: "お店", icon: "🗺️" },
 ];
