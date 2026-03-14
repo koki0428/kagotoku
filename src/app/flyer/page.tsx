@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import { addPost, addPoints } from "../storage";
+import { insertSharedPost } from "../lib/supabaseSync";
+import { useAuth } from "../contexts/AuthContext";
 import { useSound } from "../hooks/useSound";
 import PointsAnimation from "../components/PointsAnimation";
 import Toast from "../components/Toast";
@@ -15,6 +17,7 @@ interface FlyerItem {
 }
 
 export default function FlyerPage() {
+  const { user } = useAuth();
   const [storeName, setStoreName] = useState("");
   const [storeNameFromAI, setStoreNameFromAI] = useState("");
   const [items, setItems] = useState<FlyerItem[]>([]);
@@ -135,15 +138,17 @@ export default function FlyerPage() {
 
     setPosting(true);
 
-    // 各商品を投稿（最初の投稿のみaddPostでポイント加算、残りはポイントなし）
+    // 各商品を投稿（localStorage + Supabase）
     for (let i = 0; i < selected.length; i++) {
       const item = selected[i];
-      addPost({
+      const postData = {
         productName: item.name,
         storeName: finalStore,
         price: item.price,
         location: "",
-      });
+      };
+      addPost(postData);
+      insertSharedPost(user?.id ?? null, postData).catch(() => {});
     }
 
     // チラシ投稿ボーナス: +50pt（addPostの+10ptとは別に+40pt追加で合計50pt相当）

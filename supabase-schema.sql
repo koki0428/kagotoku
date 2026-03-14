@@ -37,10 +37,15 @@ alter table price_posts enable row level security;
 
 create policy "Anyone can read price posts" on price_posts
   for select using (true);
-create policy "Authenticated users can insert" on price_posts
-  for insert with check (auth.uid() = user_id);
+create policy "Anyone can insert price posts" on price_posts
+  for insert with check (true);
 create policy "Users can delete own posts" on price_posts
   for delete using (auth.uid() = user_id);
+
+-- 匿名投稿を許可するため、既存ポリシーを更新する場合:
+-- drop policy if exists "Authenticated users can insert" on price_posts;
+-- create policy "Anyone can insert price posts" on price_posts
+--   for insert with check (true);
 
 -- 3. 家計簿データ（個人）
 create table if not exists expenses (

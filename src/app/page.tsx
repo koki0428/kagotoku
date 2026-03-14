@@ -17,6 +17,8 @@ import {
   getValidPoints,
 } from "./storage";
 import { searchAmazon } from "./mockAmazon";
+import { fetchSharedPosts, fetchRecentSharedPosts, insertSharedPost } from "./lib/supabaseSync";
+import { useAuth } from "./contexts/AuthContext";
 import PointsAnimation from "./components/PointsAnimation";
 import Onboarding from "./components/Onboarding";
 import Toast from "./components/Toast";
@@ -29,11 +31,13 @@ import { useSound } from "./hooks/useSound";
 import Link from "next/link";
 
 export default function Home() {
+  const { user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [query, setQuery] = useState("");
   const [posts, setPosts] = useState<PricePost[]>([]);
   const [amazonResults, setAmazonResults] = useState<AmazonProduct[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   const [storeName, setStoreName] = useState("");
   const [price, setPrice] = useState("");
@@ -90,10 +94,35 @@ export default function Home() {
     void refreshKey;
     return getMonthSavings();
   }, [refreshKey]);
-  const recentPosts = useMemo(() => {
-    void refreshKey;
-    return getRecentPosts(8);
+  const [recentPosts, setRecentPosts] = useState<PricePost[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const shared = await fetchRecentSharedPosts(8);
+        if (!cancelled) setRecentPosts(shared.length > 0 ? shared : getRecentPosts(8));
+      } catch {
+        if (!cancelled) setRecentPosts(getRecentPosts(8));
+      }
+    })();
+    return () => { cancelled = true; };
   }, [refreshKey]);
+
+  /** Supabaseで検索し、フォールバックとしてlocalStorageも使う */
+  const doSearch = useCallback(async (term: string) => {
+    setSearching(true);
+    setAmazonResults(searchAmazon(term));
+    try {
+      const shared = await fetchSharedPosts(term);
+      // Supabase結果があればそちらを優先、なければlocalStorage
+      setPosts(shared.length > 0 ? shared : searchPosts(term));
+    } catch {
+      setPosts(searchPosts(term));
+    } finally {
+      setSearching(false);
+    }
+    setHasSearched(true);
+  }, []);
 
   // URL の ?q= パラメータで自動検索（買い物リストからの遷移）
   useEffect(() => {
@@ -101,34 +130,35 @@ export default function Home() {
     const q = params.get("q");
     if (q) {
       setQuery(q);
-      setPosts(searchPosts(q));
-      setAmazonResults(searchAmazon(q));
-      setHasSearched(true);
+      doSearch(q);
       // URLからパラメータを削除
       window.history.replaceState({}, "", "/");
     }
-  }, []);
+  }, [doSearch]);
 
   const handleSearch = useCallback(() => {
     if (!query.trim()) return;
     play("search");
-    setPosts(searchPosts(query.trim()));
-    setAmazonResults(searchAmazon(query.trim()));
-    setHasSearched(true);
-  }, [query, play]);
+    doSearch(query.trim());
+  }, [query, play, doSearch]);
 
-  const handlePost = useCallback(() => {
+  const handlePost = useCallback(async () => {
     if (!query.trim() || !storeName.trim() || !price) return;
     play("post");
-    addPost({
+    const postData = {
       productName: query.trim(),
       storeName: storeName.trim(),
       price: Number(price),
       location: location.trim(),
       lat: userLat,
       lng: userLng,
-    });
-    setPosts(searchPosts(query.trim()));
+    };
+    // localStorageに保存（オフラインフォールバック＋ポイント加算）
+    addPost(postData);
+    // Supabaseに保存（共有用）
+    insertSharedPost(user?.id ?? null, postData).catch(() => {});
+    // 検索結果を更新
+    doSearch(query.trim());
     setStoreName("");
     setPrice("");
     setLocation("");
@@ -138,7 +168,7 @@ export default function Home() {
       play("coin");
       setShowPointsAnim(false);
     }, 2500);
-  }, [query, storeName, price, location, userLat, userLng, play]);
+  }, [query, storeName, price, location, userLat, userLng, play, user, doSearch]);
 
   const handleFavorite = useCallback((productName: string) => {
     play("favorite");
@@ -150,9 +180,7 @@ export default function Home() {
   const executeSearchAndScroll = useCallback(
     (productName: string, recognizedPrice?: number) => {
       setQuery(productName);
-      setPosts(searchPosts(productName));
-      setAmazonResults(searchAmazon(productName));
-      setHasSearched(true);
+      doSearch(productName);
       if (recognizedPrice) setPrice(String(recognizedPrice));
       // 次のレンダリング後にスクロール
       setTimeout(() => {
@@ -162,7 +190,7 @@ export default function Home() {
         });
       }, 100);
     },
-    []
+    [doSearch]
   );
 
   const handleBarcodeDetected = useCallback(
@@ -404,10 +432,12 @@ export default function Home() {
             </button>
             <button
               onClick={handleSearch}
+              disabled={searching}
               className="bg-primary text-white px-5 py-3 rounded-xl font-medium
-                         hover:bg-primary-hover active:scale-95 transition-all shadow-sm"
+                         hover:bg-primary-hover active:scale-95 transition-all shadow-sm
+                         disabled:opacity-60"
             >
-              さがす
+              {searching ? "..." : "さがす"}
             </button>
           </div>
         </div>
@@ -583,9 +613,7 @@ export default function Home() {
                       style={{ animationDelay: `${i * 50}ms`, animationFillMode: "both" }}
                       onClick={() => {
                         setQuery(post.productName);
-                        setPosts(searchPosts(post.productName));
-                        setAmazonResults(searchAmazon(post.productName));
-                        setHasSearched(true);
+                        doSearch(post.productName);
                       }}
                     >
                       <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center

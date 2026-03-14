@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import type { PricePost, Favorite, ShoppingGroup, PointEntry } from "../types";
+import type { PricePost, Favorite, ShoppingGroup, PointEntry, Category } from "../types";
 
 const MIGRATED_KEY = "kagotoku_supabase_migrated";
 
@@ -116,11 +116,32 @@ export async function migrateToSupabase(userId: string): Promise<void> {
 
 // ===== Supabase CRUD ヘルパー =====
 
-/** 共有価格投稿を取得（全ユーザー） */
+const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000;
+
+function fourteenDaysAgoISO(): string {
+  return new Date(Date.now() - FOURTEEN_DAYS_MS).toISOString();
+}
+
+function mapRowToPost(row: Record<string, unknown>): PricePost {
+  return {
+    id: row.id as string,
+    productName: row.product_name as string,
+    storeName: row.store_name as string,
+    price: row.price as number,
+    location: (row.location as string) || "",
+    lat: (row.lat as number) ?? undefined,
+    lng: (row.lng as number) ?? undefined,
+    category: ((row.category as string) || "other") as Category,
+    postedAt: row.posted_at as string,
+  };
+}
+
+/** 共有価格投稿を検索（14日以内） */
 export async function fetchSharedPosts(productName?: string): Promise<PricePost[]> {
   let query = supabase
     .from("price_posts")
     .select("*")
+    .gte("posted_at", fourteenDaysAgoISO())
     .order("posted_at", { ascending: false })
     .limit(200);
 
@@ -128,37 +149,55 @@ export async function fetchSharedPosts(productName?: string): Promise<PricePost[
     query = query.ilike("product_name", `%${productName}%`);
   }
 
-  const { data } = await query;
-  if (!data) return [];
-
-  return data.map((row) => ({
-    id: row.id,
-    productName: row.product_name,
-    storeName: row.store_name,
-    price: row.price,
-    location: row.location || "",
-    lat: row.lat ?? undefined,
-    lng: row.lng ?? undefined,
-    category: row.category || "other",
-    postedAt: row.posted_at,
-  }));
+  const { data, error } = await query;
+  if (error) {
+    console.error("fetchSharedPosts error:", error);
+    return [];
+  }
+  return (data ?? []).map(mapRowToPost);
 }
 
-/** 共有価格投稿を追加 */
+/** 最近の共有投稿を取得（14日以内） */
+export async function fetchRecentSharedPosts(limit: number = 8): Promise<PricePost[]> {
+  const { data, error } = await supabase
+    .from("price_posts")
+    .select("*")
+    .gte("posted_at", fourteenDaysAgoISO())
+    .order("posted_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("fetchRecentSharedPosts error:", error);
+    return [];
+  }
+  return (data ?? []).map(mapRowToPost);
+}
+
+/** 共有価格投稿を追加（未ログイン時はuser_id=null） */
 export async function insertSharedPost(
-  userId: string,
+  userId: string | null,
   post: Omit<PricePost, "id" | "postedAt">
-): Promise<void> {
-  await supabase.from("price_posts").insert({
-    user_id: userId,
-    product_name: post.productName,
-    store_name: post.storeName,
-    price: post.price,
-    location: post.location || "",
-    lat: post.lat ?? null,
-    lng: post.lng ?? null,
-    category: post.category || "other",
-  });
+): Promise<PricePost | null> {
+  const { data, error } = await supabase
+    .from("price_posts")
+    .insert({
+      user_id: userId,
+      product_name: post.productName,
+      store_name: post.storeName,
+      price: post.price,
+      location: post.location || "",
+      lat: post.lat ?? null,
+      lng: post.lng ?? null,
+      category: post.category || "other",
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("insertSharedPost error:", error);
+    return null;
+  }
+  return data ? mapRowToPost(data) : null;
 }
 
 /** プロフィールを同期 */
