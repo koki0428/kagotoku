@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import BottomNav from "./components/BottomNav";
+import Footer from "./components/Footer";
 import Providers from "./components/Providers";
 
 const notoSansJP = Noto_Sans_JP({
@@ -57,6 +58,7 @@ export default function RootLayout({
       <body className={`${notoSansJP.variable} antialiased`}>
         <Providers>
           {children}
+          <Footer />
           <BottomNav />
         </Providers>
       </body>
