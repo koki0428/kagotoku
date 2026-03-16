@@ -28,6 +28,9 @@ import SoundToggle from "./components/SoundToggle";
 import BarcodeScanner from "./components/BarcodeScanner";
 import CloudSyncBanner from "./components/CloudSyncBanner";
 import { useSound } from "./hooks/useSound";
+import { useScrollFadeIn } from "./hooks/useScrollFadeIn";
+import { useConfetti } from "./hooks/useConfetti";
+import { useCountUp } from "./hooks/useCountUp";
 import Link from "next/link";
 import { Camera, ScanBarcode, MapPin, Heart, Package, ShoppingBag, Tag, Megaphone, Crown, Zap } from "lucide-react";
 
@@ -57,6 +60,14 @@ export default function Home() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const [isPremium, setIsPremium] = useState(false);
   const { play } = useSound();
+  const { fire: fireConfetti } = useConfetti();
+  const [heartBurstId, setHeartBurstId] = useState<string | null>(null);
+  const searchBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Scroll fade-in refs
+  const feedSection = useScrollFadeIn();
+  const adSection = useScrollFadeIn();
+  const badgeSection = useScrollFadeIn();
 
   useEffect(() => {
     setAdFree(isAdFreeActive());
@@ -114,6 +125,11 @@ export default function Home() {
     void refreshKey;
     return getMonthSavings();
   }, [refreshKey]);
+
+  // Count-up animations for savings
+  const animatedTodaySavings = useCountUp(todaySavings, 800);
+  const animatedMonthSavings = useCountUp(monthSavings, 1000);
+
   const [recentPosts, setRecentPosts] = useState<PricePost[]>([]);
   useEffect(() => {
     let cancelled = false;
@@ -184,15 +200,18 @@ export default function Home() {
     setLocation("");
     setShowPointsAnim(true);
     setRefreshKey((k) => k + 1);
+    fireConfetti();
     setTimeout(() => {
       play("coin");
       setShowPointsAnim(false);
     }, 2500);
-  }, [query, storeName, price, location, userLat, userLng, play, user, doSearch]);
+  }, [query, storeName, price, location, userLat, userLng, play, user, doSearch, fireConfetti]);
 
   const handleFavorite = useCallback((productName: string) => {
     play("favorite");
     addFavorite(productName);
+    setHeartBurstId(productName);
+    setTimeout(() => setHeartBurstId(null), 600);
     setRefreshKey((k) => k + 1);
   }, [play]);
 
@@ -348,6 +367,20 @@ export default function Home() {
     return `${Math.floor(hrs / 24)}日前`;
   };
 
+  // Ripple effect on search button
+  const handleRipple = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget;
+    const circle = document.createElement("span");
+    const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+    const radius = diameter / 2;
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.clientX - btn.getBoundingClientRect().left - radius}px`;
+    circle.style.top = `${e.clientY - btn.getBoundingClientRect().top - radius}px`;
+    circle.classList.add("ripple-effect");
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 600);
+  }, []);
+
   if (showOnboarding) {
     return <Onboarding onComplete={() => { setShowOnboarding(false); setRefreshKey((k) => k + 1); }} />;
   }
@@ -366,7 +399,7 @@ export default function Home() {
       />
 
       {/* ===== ヒーローセクション ===== */}
-      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg animate-hero-in">
         <div className="max-w-lg mx-auto">
           {/* ユーザー情報 */}
           <div className="flex items-center justify-between mb-6">
@@ -397,16 +430,18 @@ export default function Home() {
 
           {/* 節約カード */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center">
+            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center
+                            animate-card-stagger" style={{ animationDelay: "0.2s" }}>
               <p className="text-xs text-foreground/70 mb-1">今日の節約額</p>
               <p className="text-2xl font-bold font-display">
-                ¥{todaySavings.toLocaleString()}
+                ¥{animatedTodaySavings.toLocaleString()}
               </p>
             </div>
-            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center">
+            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center
+                            animate-card-stagger" style={{ animationDelay: "0.35s" }}>
               <p className="text-xs text-foreground/70 mb-1">今月の累計節約</p>
               <p className="text-2xl font-bold font-display">
-                ¥{monthSavings.toLocaleString()}
+                ¥{animatedMonthSavings.toLocaleString()}
               </p>
             </div>
           </div>
@@ -415,7 +450,8 @@ export default function Home() {
 
       <main className="max-w-lg mx-auto px-4 -mt-4 space-y-5">
         {/* ===== 検索フォーム ===== */}
-        <div className="bg-card-bg rounded-2xl shadow-md p-4 border border-border/50">
+        <div className="bg-card-bg rounded-2xl shadow-md p-4 border border-border/50
+                        animate-float-up" style={{ animationDelay: "0.4s" }}>
           <div className="flex gap-2">
             <input
               type="text"
@@ -451,9 +487,10 @@ export default function Home() {
               <ScanBarcode className="w-5 h-5" />
             </button>
             <button
-              onClick={handleSearch}
+              ref={searchBtnRef}
+              onClick={(e) => { handleRipple(e); handleSearch(); }}
               disabled={searching}
-              className="bg-primary text-white px-5 py-3 rounded-xl font-medium
+              className="ripple-btn bg-primary text-white px-5 py-3 rounded-xl font-medium
                          hover:bg-primary-hover active:scale-95 transition-all shadow-sm
                          disabled:opacity-60"
             >
@@ -488,10 +525,25 @@ export default function Home() {
                   {!isFavorited(query) && (
                     <button
                       onClick={() => handleFavorite(query.trim())}
-                      className="text-xs text-muted border border-border rounded-lg px-2.5 py-1
-                                 hover:border-primary hover:text-primary transition-colors"
+                      className={`text-xs text-muted border border-border rounded-lg px-2.5 py-1
+                                 hover:border-primary hover:text-primary transition-colors relative
+                                 ${heartBurstId === query.trim() ? "animate-heart-burst" : ""}`}
                     >
                       <Heart className="w-3.5 h-3.5 inline-block mr-0.5" /> お気に入り
+                      {heartBurstId === query.trim() && (
+                        <>
+                          {[...Array(6)].map((_, i) => (
+                            <Heart
+                              key={i}
+                              className="heart-particle w-3 h-3 text-primary"
+                              style={{
+                                "--tx": `${Math.cos((i * 60 * Math.PI) / 180) * 24}px`,
+                                "--ty": `${Math.sin((i * 60 * Math.PI) / 180) * 24}px`,
+                              } as React.CSSProperties}
+                            />
+                          ))}
+                        </>
+                      )}
                     </button>
                   )}
                   <button
@@ -594,11 +646,14 @@ export default function Home() {
             <PushNotificationBanner />
 
             {/* ===== バッジカード ===== */}
-            <UserBadge onRedeem={() => setRefreshKey((k) => k + 1)} />
+            <div ref={badgeSection.ref} className={badgeSection.isVisible ? "animate-scroll-in" : "animate-scroll-hidden"}>
+              <UserBadge onRedeem={() => setRefreshKey((k) => k + 1)} />
+            </div>
 
             {/* ===== 広告エリア ===== */}
             {!adFree && (
-              <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4 text-center">
+              <div ref={adSection.ref} className={`bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4 text-center
+                          ${adSection.isVisible ? "animate-scroll-in" : "animate-scroll-hidden"}`}>
                 <p className="text-[10px] text-muted mb-2">広告</p>
                 <div className="bg-card-bg border border-border rounded-xl py-6 px-4">
                   <p className="text-sm font-medium text-foreground/60">
@@ -621,7 +676,8 @@ export default function Home() {
             )}
 
             {/* ===== リアルタイムフィード ===== */}
-            <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
+            <section ref={feedSection.ref} className={`bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4
+                        ${feedSection.isVisible ? "animate-scroll-in" : "animate-scroll-hidden"}`}>
               <h2 className="font-bold text-base mb-3 flex items-center gap-1.5"><Zap className="w-4 h-4 text-primary" /> 最近の投稿</h2>
               {recentPosts.length === 0 ? (
                 <div className="text-center py-8">
