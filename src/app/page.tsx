@@ -32,7 +32,7 @@ import { useScrollFadeIn } from "./hooks/useScrollFadeIn";
 import { useConfetti } from "./hooks/useConfetti";
 import { useCountUp } from "./hooks/useCountUp";
 import Link from "next/link";
-import { Camera, ScanBarcode, MapPin, Heart, Package, ShoppingBag, Tag, Megaphone, Crown, Zap } from "lucide-react";
+import { Camera, ScanBarcode, MapPin, Heart, Package, ShoppingBag, Tag, Megaphone, Crown, Zap, ExternalLink } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -628,11 +628,27 @@ export default function Home() {
               <p className="text-xs text-muted mb-3">※ モックデータ（後日API連携予定）</p>
               <ul className="divide-y divide-border/60">
                 {amazonResults.map((item, i) => (
-                  <li key={i} className="py-3 flex justify-between items-center">
-                    <p className="text-sm flex-1 pr-3">{item.title}</p>
-                    <p className="text-lg font-bold whitespace-nowrap">
+                  <li key={i} className="py-3 flex items-center gap-2">
+                    <a
+                      href={`https://www.amazon.co.jp/s?k=${encodeURIComponent(item.title)}&tag=kagotoku-22`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm flex-1 min-w-0 truncate hover:text-primary transition-colors"
+                    >
+                      {item.title}
+                    </a>
+                    <p className="text-lg font-bold whitespace-nowrap shrink-0">
                       ¥{item.price.toLocaleString()}
                     </p>
+                    <a
+                      href={`https://www.amazon.co.jp/s?k=${encodeURIComponent(item.title)}&tag=kagotoku-22`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 text-xs text-primary font-medium flex items-center gap-0.5
+                                 hover:underline transition-colors whitespace-nowrap"
+                    >
+                      Amazonで見る <ExternalLink className="w-3 h-3" />
+                    </a>
                   </li>
                 ))}
               </ul>
