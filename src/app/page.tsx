@@ -26,6 +26,7 @@ import UserBadge from "./components/UserBadge";
 import PushNotificationBanner from "./components/PushNotificationBanner";
 import SoundToggle from "./components/SoundToggle";
 import BarcodeScanner from "./components/BarcodeScanner";
+import WelcomeScreen from "./components/WelcomeScreen";
 import CloudSyncBanner from "./components/CloudSyncBanner";
 import { useSound } from "./hooks/useSound";
 import { useScrollFadeIn } from "./hooks/useScrollFadeIn";
@@ -35,7 +36,8 @@ import Link from "next/link";
 import { Camera, ScanBarcode, MapPin, Heart, Package, ShoppingBag, Tag, Megaphone, Crown, Zap, ExternalLink } from "lucide-react";
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const [showWelcome, setShowWelcome] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [query, setQuery] = useState("");
   const [posts, setPosts] = useState<PricePost[]>([]);
@@ -91,10 +93,19 @@ export default function Home() {
     })().catch(() => {});
   }, [user, refreshKey]);
 
-  // オンボーディングチェック
+  // 初回訪問・オンボーディングチェック
   useEffect(() => {
-    if (!isOnboarded()) setShowOnboarding(true);
-  }, []);
+    if (!isOnboarded()) {
+      if (user) {
+        // ログイン済みならウェルカムをスキップしてオンボーディングへ
+        setShowWelcome(false);
+        setShowOnboarding(true);
+      } else if (!loading) {
+        // 未ログイン確定ならウェルカム表示
+        setShowWelcome(true);
+      }
+    }
+  }, [user, loading]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -380,6 +391,15 @@ export default function Home() {
     btn.appendChild(circle);
     setTimeout(() => circle.remove(), 600);
   }, []);
+
+  if (showWelcome) {
+    return (
+      <WelcomeScreen
+        onGuest={() => { setShowWelcome(false); setShowOnboarding(true); }}
+        onLoggedIn={() => { setShowWelcome(false); setShowOnboarding(true); }}
+      />
+    );
+  }
 
   if (showOnboarding) {
     return <Onboarding onComplete={() => { setShowOnboarding(false); setRefreshKey((k) => k + 1); }} />;
