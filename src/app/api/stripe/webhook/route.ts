@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "../../../lib/stripe";
+import { getStripe } from "../../../lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   try {
     if (webhookSecret && signature) {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = getStripe().webhooks.constructEvent(body, signature, webhookSecret);
     } else {
       event = JSON.parse(body) as Stripe.Event;
     }
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         if (!userId) break;
 
         const subscriptionId = session.subscription as string;
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+        const subscription = await getStripe().subscriptions.retrieve(subscriptionId, {
           expand: ["items.data"],
         });
         const expiresAt = getSubscriptionPeriodEnd(subscription as unknown as Stripe.Subscription);
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
           : subscriptionRef?.id;
         if (!subscriptionId) break;
 
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+        const subscription = await getStripe().subscriptions.retrieve(subscriptionId, {
           expand: ["items.data"],
         });
         const customerId = invoice.customer as string;

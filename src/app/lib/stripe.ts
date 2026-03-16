@@ -1,14 +1,25 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-02-25.clover",
-});
+let _stripe: Stripe | null = null;
+
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
+    _stripe = new Stripe(key, {
+      apiVersion: "2026-02-25.clover",
+    });
+  }
+  return _stripe;
+}
 
 /** 月額300円のサブスクリプション Price ID（初回に自動作成） */
 let cachedPriceId: string | null = null;
 
 export async function getOrCreatePriceId(): Promise<string> {
   if (cachedPriceId) return cachedPriceId;
+
+  const stripe = getStripe();
 
   // 既存のPrice検索
   const prices = await stripe.prices.list({
