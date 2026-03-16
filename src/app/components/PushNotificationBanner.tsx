@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Bell } from "lucide-react";
 
 export default function PushNotificationBanner() {
   const [isPWA, setIsPWA] = useState(false);
@@ -37,9 +38,9 @@ export default function PushNotificationBanner() {
   // 既に許可済み
   if (permission === "granted") {
     return (
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl px-4 py-2.5 text-center">
-        <p className="text-xs text-blue-400 font-medium">
-          🔔 通知ON — 目標価格を下回ったらお知らせします
+      <div className="bg-blue-50 border border-blue-200 rounded-2xl px-4 py-2.5 text-center">
+        <p className="text-xs text-blue-600 font-medium flex items-center justify-center gap-1">
+          <Bell className="w-3.5 h-3.5" /> 通知ON — 目標価格を下回ったらお知らせします
         </p>
       </div>
     );
@@ -58,7 +59,7 @@ export default function PushNotificationBanner() {
                    hover:opacity-90 active:scale-[0.98] transition-all
                    flex items-center justify-center gap-2"
       >
-        <span>🔔</span>
+        <Bell className="w-4 h-4" />
         通知を有効にして値下げをお知らせ
       </button>
     );
@@ -66,15 +67,15 @@ export default function PushNotificationBanner() {
 
   // ブラウザ直接アクセス: ホーム画面追加を促す
   return (
-    <div className="bg-blue-500/10 border border-blue-500/20
+    <div className="bg-blue-50 border border-blue-200
                     rounded-2xl px-4 py-3 text-center">
-      <p className="text-xs text-blue-400 font-medium mb-1">
-        🔔 プッシュ通知を使うには
+      <p className="text-xs text-blue-600 font-medium mb-1 flex items-center justify-center gap-1">
+        <Bell className="w-3.5 h-3.5" /> プッシュ通知を使うには
       </p>
-      <p className="text-[11px] text-blue-400/80">
+      <p className="text-[11px] text-blue-500">
         ホーム画面に追加すると通知が使えます
       </p>
-      <p className="text-[10px] text-blue-400/60 mt-1">
+      <p className="text-[10px] text-blue-400 mt-1">
         共有ボタン → 「ホーム画面に追加」
       </p>
     </div>

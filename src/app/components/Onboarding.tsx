@@ -1,26 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { Camera, MapPin, Users, Sparkles } from "lucide-react";
 import { completeOnboarding, setNickname, grantWelcomeBonus } from "../storage";
 
 const STEPS = [
   {
-    emoji: "📸",
+    icon: Camera,
     title: "買い物中に価格を記録するだけ",
     desc: "見つけた商品の価格をサッと投稿。\nあなたの情報がみんなの節約につながります。",
-    bg: "from-purple-500 to-pink-500",
+    bg: "from-rose-400 to-pink-400",
   },
   {
-    emoji: "🗺️",
+    icon: MapPin,
     title: "近くの店の最安値がわかる",
     desc: "地図で近所のスーパーやドラッグストアの\n価格をかんたんに比較できます。",
-    bg: "from-blue-500 to-cyan-500",
+    bg: "from-blue-400 to-indigo-400",
   },
   {
-    emoji: "🤝",
+    icon: Users,
     title: "みんなで節約情報をシェアしよう",
     desc: "投稿するとポイントが貯まってバッジをGET！\nみんなの力でもっとおトクに。",
-    bg: "from-emerald-500 to-teal-500",
+    bg: "from-emerald-400 to-teal-400",
   },
 ];
 
@@ -69,7 +70,7 @@ export default function Onboarding({ onComplete }: Props) {
               className={`w-32 h-32 rounded-full bg-gradient-to-br ${STEPS[step].bg}
                           flex items-center justify-center mx-auto mb-8 shadow-lg`}
             >
-              <span className="text-6xl">{STEPS[step].emoji}</span>
+              {(() => { const Icon = STEPS[step].icon; return <Icon className="w-14 h-14 text-white" />; })()}
             </div>
             <h2 className="text-xl font-bold mb-4 text-foreground">
               {STEPS[step].title}
@@ -81,9 +82,9 @@ export default function Onboarding({ onComplete }: Props) {
         ) : (
           /* ニックネーム設定 */
           <div key="nickname" className="animate-onboard text-center max-w-sm w-full">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-cyan-400
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-rose-400
                             flex items-center justify-center mx-auto mb-8 shadow-lg">
-              <span className="text-6xl">👋</span>
+              <Sparkles className="w-14 h-14 text-white" />
             </div>
             <h2 className="text-xl font-bold mb-2 text-foreground">
               ようこそカゴトクへ！

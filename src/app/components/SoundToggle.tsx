@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { isSoundEnabled, setSoundEnabled } from "../hooks/useSound";
+import { Volume2, VolumeX } from "lucide-react";
 
 export default function SoundToggle() {
   const [enabled, setEnabled] = useState(true);
@@ -19,11 +20,15 @@ export default function SoundToggle() {
   return (
     <button
       onClick={toggle}
-      className="bg-white/20 backdrop-blur rounded-xl w-8 h-8 flex items-center justify-center
-                 hover:bg-white/30 active:scale-90 transition-all"
+      className="bg-gray-100 rounded-xl w-8 h-8 flex items-center justify-center
+                 hover:bg-gray-200 active:scale-90 transition-all border border-border"
       title={enabled ? "効果音をオフにする" : "効果音をオンにする"}
     >
-      <span className="text-sm">{enabled ? "🔊" : "🔇"}</span>
+      {enabled ? (
+        <Volume2 className="w-4 h-4 text-primary" />
+      ) : (
+        <VolumeX className="w-4 h-4 text-muted" />
+      )}
     </button>
   );
 }

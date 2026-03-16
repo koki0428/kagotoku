@@ -1,14 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { Noto_Sans_JP, Poppins } from "next/font/google";
 import "./globals.css";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
 import Providers from "./components/Providers";
 
 const notoSansJP = Noto_Sans_JP({
-  variable: "--font-geist-sans",
+  variable: "--font-noto-sans",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const viewport: Viewport = {
@@ -16,7 +22,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#e8725a",
+  themeColor: "#FAFAFA",
 };
 
 export const metadata: Metadata = {
@@ -52,7 +58,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="カゴトク" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        {/* iPhone スプラッシュ (コーラルのグラデーション背景) */}
         <meta name="apple-mobile-web-app-orientations" content="portrait" />
         {/* Google AdSense */}
         <script
@@ -61,7 +66,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${notoSansJP.variable} antialiased`}>
+      <body className={`${notoSansJP.variable} ${poppins.variable} antialiased`}>
         <Providers>
           {children}
           <Footer />

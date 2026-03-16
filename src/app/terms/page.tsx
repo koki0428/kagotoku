@@ -1,12 +1,13 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen pb-24">
-      <div className="hero-gradient text-white px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
         <div className="max-w-lg mx-auto">
-          <Link href="/" className="text-white/80 hover:text-white transition-colors text-sm">
-            ← ホームに戻る
+          <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors text-sm inline-flex items-center gap-1">
+            <ArrowLeft className="w-4 h-4" /> ホームに戻る
           </Link>
           <h1 className="text-2xl font-bold mt-3">利用規約</h1>
         </div>

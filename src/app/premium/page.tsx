@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Crown, Ban, Bell, Zap, Check, Minus, PartyPopper } from "lucide-react";
 
 export default function PremiumPage() {
   return (
@@ -71,22 +72,22 @@ function PremiumContent() {
   };
 
   const features = [
-    { icon: "🚫", title: "広告を完全非表示", desc: "すべての広告が非表示になります" },
-    { icon: "🔔", title: "価格アラート無制限", desc: "お気に入り商品の価格変動を通知" },
-    { icon: "👑", title: "プレミアムバッジ", desc: "プロフィールに特別なバッジを表示" },
-    { icon: "⚡", title: "優先サポート", desc: "お問い合わせに優先的に対応" },
+    { icon: Ban, title: "広告を完全非表示", desc: "すべての広告が非表示になります" },
+    { icon: Bell, title: "価格アラート無制限", desc: "お気に入り商品の価格変動を通知" },
+    { icon: Crown, title: "プレミアムバッジ", desc: "プロフィールに特別なバッジを表示" },
+    { icon: Zap, title: "優先サポート", desc: "お問い合わせに優先的に対応" },
   ];
 
   return (
     <div className="min-h-screen pb-24">
       {/* ヘッダー */}
-      <div className="hero-gradient text-white px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
         <div className="max-w-lg mx-auto">
-          <Link href="/" className="text-white/80 hover:text-white transition-colors text-sm">
+          <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors text-sm">
             ← ホームに戻る
           </Link>
           <div className="mt-4 text-center">
-            <p className="text-4xl mb-2">👑</p>
+            <Crown className="w-10 h-10 text-primary mx-auto mb-2" />
             <h1 className="text-2xl font-bold">カゴトク プレミアム</h1>
             <p className="text-sm opacity-85 mt-1">もっと快適に、もっとおトクに</p>
           </div>
@@ -96,24 +97,24 @@ function PremiumContent() {
       <main className="max-w-lg mx-auto px-4 -mt-4 space-y-4">
         {/* 成功メッセージ */}
         {success && (
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 text-center animate-fade-in">
-            <p className="text-2xl mb-2">🎉</p>
-            <p className="text-sm font-bold text-emerald-400">プレミアムに登録しました！</p>
-            <p className="text-xs text-emerald-400/80 mt-1">すべての特典をお楽しみください</p>
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center animate-fade-in">
+            <PartyPopper className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+            <p className="text-sm font-bold text-emerald-600">プレミアムに登録しました！</p>
+            <p className="text-xs text-emerald-500 mt-1">すべての特典をお楽しみください</p>
           </div>
         )}
 
         {/* キャンセルメッセージ */}
         {canceled && (
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-center animate-fade-in">
-            <p className="text-sm text-amber-400">決済がキャンセルされました</p>
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center animate-fade-in">
+            <p className="text-sm text-amber-600">決済がキャンセルされました</p>
           </div>
         )}
 
         {/* プレミアム加入済み */}
         {!checkingStatus && isPremium && (
           <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-5 text-center">
-            <p className="text-3xl mb-2">👑</p>
+            <Crown className="w-8 h-8 text-primary mx-auto mb-2" />
             <p className="font-bold text-base">プレミアム会員</p>
             <p className="text-xs text-muted mt-1">
               有効期限：{expiresAt ? new Date(expiresAt).toLocaleDateString("ja-JP") : "—"}
@@ -130,7 +131,7 @@ function PremiumContent() {
           <ul className="space-y-3">
             {features.map((f) => (
               <li key={f.title} className="flex items-start gap-3 bg-background rounded-xl p-3">
-                <span className="text-xl shrink-0">{f.icon}</span>
+                <f.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-bold">{f.title}</p>
                   <p className="text-xs text-muted mt-0.5">{f.desc}</p>
@@ -202,10 +203,10 @@ function PremiumContent() {
                 <tr key={row.name}>
                   <td className="py-2.5">{row.name}</td>
                   <td className="text-center py-2.5">
-                    {row.free ? <span className="text-accent">○</span> : <span className="text-muted">—</span>}
+                    {row.free ? <Check className="w-4 h-4 text-accent inline-block" /> : <Minus className="w-4 h-4 text-muted inline-block" />}
                   </td>
                   <td className="text-center py-2.5">
-                    {row.premium ? <span className="text-primary font-bold">○</span> : "—"}
+                    {row.premium ? <Check className="w-4 h-4 text-primary inline-block" /> : <Minus className="w-4 h-4 text-muted inline-block" />}
                   </td>
                 </tr>
               ))}

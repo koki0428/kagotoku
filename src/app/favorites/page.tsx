@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { Bell, Heart, Target, PartyPopper } from "lucide-react";
 import Header from "../components/Header";
 import Toast from "../components/Toast";
 import UserBadge from "../components/UserBadge";
@@ -35,7 +36,7 @@ export default function FavoritesPage() {
   useEffect(() => {
     if (alerts.length > 0) {
       const a = alerts[0];
-      setToastMsg(`🔔 ${a.favorite.productName} が ¥${a.post.price.toLocaleString()} で見つかりました！`);
+      setToastMsg(`${a.favorite.productName} が ¥${a.post.price.toLocaleString()} で見つかりました！`);
       setShowToast(true);
     }
   }, [alerts.length]);
@@ -88,10 +89,10 @@ export default function FavoritesPage() {
 
         {/* アラート通知 */}
         {alerts.length > 0 && (
-          <div className="bg-accent/10 border border-accent/20
+          <div className="bg-emerald-50 border border-emerald-200
                           rounded-2xl p-4 shadow-sm">
-            <h2 className="font-bold text-sm text-accent mb-2">
-              🔔 目標価格を下回りました！
+            <h2 className="font-bold text-sm text-accent mb-2 flex items-center gap-1.5">
+              <Bell className="w-4 h-4" /> 目標価格を下回りました！
             </h2>
             <ul className="space-y-2">
               {alerts.map((alert) => (
@@ -127,11 +128,11 @@ export default function FavoritesPage() {
 
         {/* お気に入りリスト */}
         <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
-          <h2 className="font-bold text-base mb-3">💛 お気に入り商品</h2>
+          <h2 className="font-bold text-base mb-3 flex items-center gap-1.5"><Heart className="w-4 h-4 text-amber-600" /> お気に入り商品</h2>
 
           {favorites.length === 0 ? (
             <div className="text-center py-10">
-              <p className="text-4xl mb-3">💛</p>
+              <Heart className="w-10 h-10 text-amber-600 mx-auto mb-3" />
               <p className="text-sm text-muted">
                 まだお気に入りがありません
                 <br />
@@ -223,7 +224,7 @@ export default function FavoritesPage() {
                                      rounded-lg px-3 py-1.5 hover:border-primary hover:text-primary
                                      transition-colors"
                         >
-                          <span>🎯</span>
+                          <Target className="w-3.5 h-3.5" />
                           {fav.targetPrice
                             ? `目標: ¥${fav.targetPrice.toLocaleString()}`
                             : "目標価格を設定"}
@@ -234,8 +235,8 @@ export default function FavoritesPage() {
                     {/* アラート発動中の詳細 */}
                     {alert && (
                       <div className="mt-2 bg-accent/10 rounded-lg p-2 text-center">
-                        <p className="text-xs text-accent font-medium">
-                          🎉 {alert.storeName}で ¥{alert.price.toLocaleString()}{" "}
+                        <p className="text-xs text-accent font-medium flex items-center justify-center gap-1">
+                          <PartyPopper className="w-3.5 h-3.5" /> {alert.storeName}で ¥{alert.price.toLocaleString()}{" "}
                           で見つかりました！
                         </p>
                       </div>

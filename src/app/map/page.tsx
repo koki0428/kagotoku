@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { Map, MapPin, Tag, Medal, ClipboardList, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import Header from "../components/Header";
 import PointsAnimation from "../components/PointsAnimation";
@@ -205,14 +206,14 @@ export default function MapPage() {
         {/* ステータス */}
         {loading && (
           <div className="bg-card-bg rounded-2xl border border-border p-8 text-center">
-            <p className="text-3xl mb-3">📡</p>
+            <Loader className="w-8 h-8 text-primary mx-auto mb-3 animate-spin" />
             <p className="text-sm text-muted">現在地を取得中…</p>
           </div>
         )}
 
         {geoError && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
-            <p className="text-sm text-red-400">{geoError}</p>
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
+            <p className="text-sm text-red-600">{geoError}</p>
           </div>
         )}
 
@@ -220,8 +221,8 @@ export default function MapPage() {
           <>
             {/* 地図 */}
             <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-3">
-              <h2 className="font-bold text-base mb-2">
-                🗺️ 近くのお店（5km圏内）
+              <h2 className="font-bold text-base mb-2 flex items-center gap-1.5">
+                <Map className="w-4 h-4 text-primary" /> 近くのお店（5km圏内）
               </h2>
 
               {shopLoading && (
@@ -232,8 +233,8 @@ export default function MapPage() {
               )}
 
               {shopError && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-2">
-                  <p className="text-xs text-red-400">{shopError}</p>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-2">
+                  <p className="text-xs text-red-600">{shopError}</p>
                 </div>
               )}
 
@@ -302,8 +303,8 @@ export default function MapPage() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-bold text-base">
-                      🏷️ {targetStore.name}
+                    <h3 className="font-bold text-base flex items-center gap-1.5">
+                      <Tag className="w-4 h-4 text-primary" /> {targetStore.name}
                     </h3>
                     <p
                       className="text-xs font-medium mt-0.5"
@@ -355,8 +356,8 @@ export default function MapPage() {
             {/* 今週の投稿ランキング */}
             {ranking.length > 0 && (
               <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-                <h2 className="font-bold text-base mb-3">
-                  🏅 今週の投稿ランキング
+                <h2 className="font-bold text-base mb-3 flex items-center gap-1.5">
+                  <Medal className="w-4 h-4 text-amber-600" /> 今週の投稿ランキング
                 </h2>
                 <ul className="space-y-2">
                   {ranking.map((entry, i) => (
@@ -367,11 +368,11 @@ export default function MapPage() {
                       <span
                         className={`text-lg font-bold shrink-0 w-7 text-center ${
                           i === 0
-                            ? "text-yellow-500"
+                            ? "text-amber-600"
                             : i === 1
                               ? "text-gray-400"
                               : i === 2
-                                ? "text-amber-500"
+                                ? "text-amber-600"
                                 : "text-muted"
                         }`}
                       >
@@ -392,7 +393,7 @@ export default function MapPage() {
             {/* 店舗リスト */}
             {!shopLoading && filteredStores.length > 0 && (
               <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-                <h2 className="font-bold text-base mb-3">📋 店舗一覧</h2>
+                <h2 className="font-bold text-base mb-3 flex items-center gap-1.5"><ClipboardList className="w-4 h-4 text-primary" /> 店舗一覧</h2>
                 <ul className="space-y-2">
                   {filteredStores.map((store) => (
                     <li
@@ -449,7 +450,7 @@ export default function MapPage() {
         {/* 位置情報なし */}
         {!loading && geoError && (
           <div className="text-center py-8">
-            <p className="text-4xl mb-3">📍</p>
+            <MapPin className="w-10 h-10 text-red-600 mx-auto mb-3" />
             <p className="text-sm text-muted">
               位置情報を許可すると
               <br />

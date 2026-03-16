@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { X } from "lucide-react";
 
 interface Props {
   onDetected: (code: string, productName: string | null) => void;
@@ -95,7 +96,7 @@ export default function BarcodeScanner({ onDetected, onClose }: Props) {
           }}
           className="text-white text-2xl hover:opacity-70"
         >
-          ✕
+          <X className="w-6 h-6" />
         </button>
       </div>
 

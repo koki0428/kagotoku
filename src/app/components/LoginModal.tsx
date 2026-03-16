@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { Mail, Lock, X } from "lucide-react";
 
 interface Props {
   onClose: () => void;
@@ -45,7 +46,9 @@ export default function LoginModal({ onClose }: Props) {
           className="relative bg-card-bg rounded-2xl shadow-xl p-6 w-full max-w-sm animate-slide-up text-center"
           onClick={(e) => e.stopPropagation()}
         >
-          <p className="text-3xl mb-3">📧</p>
+          <div className="flex justify-center mb-3">
+            <Mail className="w-8 h-8 text-primary" />
+          </div>
           <h3 className="text-base font-bold mb-2">確認メールを送信しました</h3>
           <p className="text-sm text-muted mb-4">
             {email} に届いたリンクをクリックして登録を完了してください
@@ -73,12 +76,14 @@ export default function LoginModal({ onClose }: Props) {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-muted text-lg hover:text-foreground"
+          className="absolute top-4 right-4 text-muted hover:text-foreground"
         >
-          ✕
+          <X className="w-5 h-5" />
         </button>
 
-        <p className="text-3xl text-center mb-2">🔐</p>
+        <div className="flex justify-center mb-2">
+          <Lock className="w-8 h-8 text-primary" />
+        </div>
         <h3 className="text-base font-bold text-center mb-1">
           {mode === "login" ? "ログイン" : "アカウント作成"}
         </h3>

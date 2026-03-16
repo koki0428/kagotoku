@@ -19,6 +19,16 @@ import {
 import type { PointEntry } from "../types";
 import { useSound } from "../hooks/useSound";
 import { useRouter } from "next/navigation";
+import {
+  Gift,
+  MapPin,
+  Newspaper,
+  FileText,
+  Heart,
+  Flame,
+  Sparkles,
+  ChevronDown,
+} from "lucide-react";
 
 export default function UserBadge({
   onRedeem,
@@ -133,9 +143,9 @@ export default function UserBadge({
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-primary">
-              {validPoints}<span className="text-xs font-normal">pt</span>
+              <span className="font-display">{validPoints}</span><span className="text-xs font-normal">pt</span>
             </p>
-            <p className="text-[10px] text-muted">{profile.postCount}回投稿</p>
+            <p className="text-[10px] text-muted"><span className="font-display">{profile.postCount}</span>回投稿</p>
           </div>
         </div>
 
@@ -153,7 +163,7 @@ export default function UserBadge({
             <div className="mt-2">
               <div className="flex justify-between text-[10px] text-muted mb-1">
                 <span>次のバッジまで</span>
-                <span>{next - validPoints}pt</span>
+                <span><span className="font-display">{next - validPoints}</span>pt</span>
               </div>
               <div className="h-1.5 bg-border rounded-full overflow-hidden">
                 <div
@@ -167,14 +177,14 @@ export default function UserBadge({
 
         {/* 失効間近の警告 */}
         {expiringSoonTotal > 0 && (
-          <div className="mt-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
-            <p className="text-xs font-medium text-amber-400">
-              {expiringSoonTotal}pt がもうすぐ失効します
+          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+            <p className="text-xs font-medium text-amber-600">
+              <span className="font-display">{expiringSoonTotal}</span>pt がもうすぐ失効します
             </p>
             <ul className="mt-1 space-y-0.5">
               {expiringSoon.map((e) => (
-                <li key={e.id} className="text-[10px] text-amber-400/80">
-                  {e.amount - e.consumed}pt — 残り{daysUntil(e.expiresAt)}日（{formatDate(e.expiresAt)}まで）
+                <li key={e.id} className="text-[10px] text-amber-500">
+                  <span className="font-display">{e.amount - e.consumed}</span>pt — 残り<span className="font-display">{daysUntil(e.expiresAt)}</span>日（{formatDate(e.expiresAt)}まで）
                 </li>
               ))}
             </ul>
@@ -183,9 +193,9 @@ export default function UserBadge({
 
         {/* 広告非表示ステータス */}
         {adFreeActive && remainingDays > 0 && (
-          <div className="mt-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-3 py-2 text-center">
-            <p className="text-xs font-medium text-indigo-400">
-              広告非表示 残り{remainingDays}日
+          <div className="mt-3 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-center">
+            <p className="text-xs font-medium text-indigo-600">
+              広告非表示 残り<span className="font-display">{remainingDays}</span>日
             </p>
           </div>
         )}
@@ -200,19 +210,19 @@ export default function UserBadge({
                 ${
                   canRedeem
                     ? "bg-primary text-white hover:bg-primary-hover active:scale-95 shadow-sm"
-                    : "bg-border/60 text-muted cursor-not-allowed"
+                    : "bg-gray-200 text-muted cursor-not-allowed"
                 }`}
             >
               {canRedeem
-                ? "🎁 ポイントを使う"
-                : `🎁 あと${pointsNeeded}ポイントで交換可能`}
+                ? <span className="inline-flex items-center gap-1"><Gift className="w-4 h-4" /> ポイントを使う</span>
+                : <span className="inline-flex items-center gap-1"><Gift className="w-4 h-4" /> あと<span className="font-display">{pointsNeeded}</span>ポイントで交換可能</span>}
             </button>
           ) : (
             <button
               disabled
-              className="w-full py-2.5 rounded-xl text-sm font-medium bg-border/60 text-muted cursor-not-allowed"
+              className="w-full py-2.5 rounded-xl text-sm font-medium bg-gray-200 text-muted cursor-not-allowed"
             >
-              🎁 広告非表示 適用中
+              <span className="inline-flex items-center gap-1"><Gift className="w-4 h-4" /> 広告非表示 適用中</span>
             </button>
           )}
         </div>
@@ -225,9 +235,7 @@ export default function UserBadge({
                        hover:text-primary transition-colors"
           >
             <span>ポイントの貯め方</span>
-            <span className={`transition-transform ${showHowTo ? "rotate-180" : ""}`}>
-              ▼
-            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${showHowTo ? "rotate-180" : ""}`} />
           </button>
 
           {showHowTo && (
@@ -239,12 +247,12 @@ export default function UserBadge({
                            cursor-pointer hover:bg-primary/5 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">📍</span>
+                  <MapPin className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">価格を投稿する</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-primary">+10pt</span>
-                  <span className="text-[10px] text-muted">›</span>
+                  <span className="text-xs font-bold text-primary">+<span className="font-display">10</span>pt</span>
+                  <span className="text-[10px] text-muted">&rsaquo;</span>
                 </div>
               </li>
               {/* チラシを投稿する */}
@@ -254,12 +262,12 @@ export default function UserBadge({
                            cursor-pointer hover:bg-primary/5 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">📰</span>
+                  <Newspaper className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">チラシを投稿する</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-primary">+50pt</span>
-                  <span className="text-[10px] text-muted">›</span>
+                  <span className="text-xs font-bold text-primary">+<span className="font-display">50</span>pt</span>
+                  <span className="text-[10px] text-muted">&rsaquo;</span>
                 </div>
               </li>
               {/* レシートを登録する */}
@@ -269,12 +277,12 @@ export default function UserBadge({
                            cursor-pointer hover:bg-primary/5 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">🧾</span>
+                  <FileText className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">レシートを登録する</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-primary">+20pt</span>
-                  <span className="text-[10px] text-muted">›</span>
+                  <span className="text-xs font-bold text-primary">+<span className="font-display">20</span>pt</span>
+                  <span className="text-[10px] text-muted">&rsaquo;</span>
                 </div>
               </li>
               {/* お気に入り商品を登録する */}
@@ -284,12 +292,12 @@ export default function UserBadge({
                            cursor-pointer hover:bg-primary/5 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">💛</span>
+                  <Heart className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">お気に入り商品を登録する</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-primary">+5pt</span>
-                  <span className="text-[10px] text-muted">›</span>
+                  <span className="text-xs font-bold text-primary">+<span className="font-display">5</span>pt</span>
+                  <span className="text-[10px] text-muted">&rsaquo;</span>
                 </div>
               </li>
               {/* 連続ログイン */}
@@ -306,33 +314,33 @@ export default function UserBadge({
                 }}
                 className={`flex items-center justify-between rounded-lg px-3 py-2 transition-colors ${
                   dailyDone
-                    ? "bg-border/40 opacity-60"
+                    ? "bg-gray-100 opacity-60"
                     : "bg-background cursor-pointer hover:bg-primary/5"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">🔥</span>
+                  <Flame className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">
                     連続ログイン（毎日）
-                    {dailyDone && <span className="text-[10px] text-accent ml-1">✓ 取得済み</span>}
+                    {dailyDone && <span className="text-[10px] text-accent ml-1">&#10003; 取得済み</span>}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-primary">+3pt</span>
+                <span className="text-xs font-bold text-primary">+<span className="font-display">3</span>pt</span>
               </li>
               {/* 初回登録ボーナス */}
               <li
                 className={`flex items-center justify-between rounded-lg px-3 py-2 ${
-                  welcomeDone ? "bg-border/40 opacity-60" : "bg-background"
+                  welcomeDone ? "bg-gray-100 opacity-60" : "bg-background"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">🎉</span>
+                  <Sparkles className="w-4 h-4 text-muted" />
                   <span className="text-xs font-medium">
                     初回登録ボーナス
-                    {welcomeDone && <span className="text-[10px] text-accent ml-1">✓ 取得済み</span>}
+                    {welcomeDone && <span className="text-[10px] text-accent ml-1">&#10003; 取得済み</span>}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-primary">+100pt</span>
+                <span className="text-xs font-bold text-primary">+<span className="font-display">100</span>pt</span>
               </li>
             </ul>
           )}
@@ -346,10 +354,8 @@ export default function UserBadge({
               className="w-full flex items-center justify-between text-xs text-muted
                          hover:text-primary transition-colors"
             >
-              <span>ポイント履歴（{validEntries.length}件）</span>
-              <span className={`transition-transform ${showHistory ? "rotate-180" : ""}`}>
-                ▼
-              </span>
+              <span>ポイント履歴（<span className="font-display">{validEntries.length}</span>件）</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showHistory ? "rotate-180" : ""}`} />
             </button>
 
             {showHistory && (
@@ -369,21 +375,21 @@ export default function UserBadge({
                         key={entry.id}
                         className={`rounded-lg px-3 py-2 text-xs ${
                           isSoon
-                            ? "bg-amber-500/10 border border-amber-500/20"
+                            ? "bg-amber-50 border border-amber-200"
                             : "bg-background"
                         }`}
                       >
                         <div className="flex justify-between items-center">
                           <span className="font-medium">
-                            +{entry.amount}pt
+                            +<span className="font-display">{entry.amount}</span>pt
                             {entry.consumed > 0 && (
                               <span className="text-muted font-normal">
-                                （残{remaining}pt）
+                                （残<span className="font-display">{remaining}</span>pt）
                               </span>
                             )}
                           </span>
                           {isSoon && (
-                            <span className="text-[10px] text-amber-400 font-bold">
+                            <span className="text-[10px] text-amber-600 font-bold">
                               もうすぐ失効
                             </span>
                           )}
@@ -404,7 +410,7 @@ export default function UserBadge({
           <div className="mt-3 pt-3 border-t border-border text-center">
             <p className="text-[10px] text-muted">あなたの投稿による節約貢献額</p>
             <p className="text-base font-bold text-accent">
-              ¥{contribution.toLocaleString()}
+              ¥<span className="font-display">{contribution.toLocaleString()}</span>
             </p>
           </div>
         )}
@@ -421,21 +427,23 @@ export default function UserBadge({
             className="relative bg-card-bg rounded-2xl shadow-xl p-6 w-full max-w-sm animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-center text-3xl mb-3">🎁</p>
+            <p className="text-center mb-3 flex justify-center">
+              <Gift className="w-8 h-8 text-primary" />
+            </p>
             <h3 className="text-base font-bold text-center mb-2">
               ポイント交換
             </h3>
             <p className="text-sm text-center text-muted mb-5">
-              1000ポイントを使って
+              <span className="font-display">1000</span>ポイントを使って
               <br />
               広告を1ヶ月非表示にしますか？
             </p>
             <div className="bg-background rounded-xl p-3 mb-5 text-center">
               <p className="text-xs text-muted">交換後のポイント</p>
               <p className="text-lg font-bold text-primary">
-                {validPoints}<span className="text-sm font-normal">pt</span>
+                <span className="font-display">{validPoints}</span><span className="text-sm font-normal">pt</span>
                 <span className="mx-2 text-muted">{"\u2192"}</span>
-                {validPoints - 1000}<span className="text-sm font-normal">pt</span>
+                <span className="font-display">{validPoints - 1000}</span><span className="text-sm font-normal">pt</span>
               </p>
             </div>
             <div className="flex gap-3">

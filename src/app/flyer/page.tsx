@@ -7,6 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useSound } from "../hooks/useSound";
 import PointsAnimation from "../components/PointsAnimation";
 import Toast from "../components/Toast";
+import { Newspaper, Camera, ImageIcon, Check, X, PartyPopper } from "lucide-react";
 
 interface FlyerItem {
   name: string;
@@ -86,7 +87,7 @@ export default function FlyerPage() {
             }))
           );
           setRecognized(true);
-          showMsg(`📰 ${data.items.length}件の特売商品を検出しました`);
+          showMsg(`${data.items.length}件の特売商品を検出しました`);
         } else {
           play("error");
           showMsg("特売商品を検出できませんでした", "warning");
@@ -159,7 +160,7 @@ export default function FlyerPage() {
     setShowPointsAnim(true);
     setPosted(true);
     setPosting(false);
-    showMsg(`📰 ${selected.length}件の特売情報を投稿しました！ +50pt`);
+    showMsg(`${selected.length}件の特売情報を投稿しました！ +50pt`);
 
     setTimeout(() => setShowPointsAnim(false), 2500);
   }, [storeName, items, play]);
@@ -190,9 +191,9 @@ export default function FlyerPage() {
       />
 
       {/* ヘッダー */}
-      <div className="hero-gradient text-white px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
         <div className="max-w-lg mx-auto">
-          <h1 className="text-2xl font-bold mb-1">📰 チラシ投稿</h1>
+          <h1 className="text-2xl font-bold mb-1 flex items-center gap-2"><Newspaper className="w-6 h-6" /> チラシ投稿</h1>
           <p className="text-sm opacity-85">
             チラシの写真から特売情報を自動で読み取り
           </p>
@@ -248,7 +249,7 @@ export default function FlyerPage() {
                              hover:bg-primary-hover active:scale-95 transition-all shadow-sm
                              flex items-center justify-center gap-2"
                 >
-                  <span className="text-lg">📷</span>
+                  <Camera className="w-5 h-5" />
                   撮影する
                 </button>
                 <button
@@ -263,7 +264,7 @@ export default function FlyerPage() {
                              hover:border-primary hover:text-primary transition-colors
                              flex items-center justify-center gap-2"
                 >
-                  <span className="text-lg">🖼️</span>
+                  <ImageIcon className="w-5 h-5" />
                   画像を選択
                 </button>
               </div>
@@ -306,7 +307,7 @@ export default function FlyerPage() {
                                       : "border-border"
                                   }`}
                     >
-                      {item.selected && <span className="text-xs">✓</span>}
+                      {item.selected && <Check className="w-3 h-3" />}
                     </button>
 
                     <div className="flex-1 min-w-0 space-y-1.5">
@@ -334,7 +335,7 @@ export default function FlyerPage() {
                           </span>
                         )}
                         {item.note && (
-                          <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
                             {item.note}
                           </span>
                         )}
@@ -346,7 +347,7 @@ export default function FlyerPage() {
                       onClick={() => removeItem(i)}
                       className="text-muted hover:text-red-400 transition-colors shrink-0 mt-1"
                     >
-                      <span className="text-xs">✕</span>
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 </li>
@@ -378,7 +379,7 @@ export default function FlyerPage() {
         {/* 投稿完了 */}
         {posted && (
           <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-6 text-center">
-            <p className="text-4xl mb-3">🎉</p>
+            <PartyPopper className="w-10 h-10 text-primary mx-auto mb-3" />
             <h2 className="font-bold text-lg mb-2">投稿完了！</h2>
             <p className="text-sm text-muted mb-5">
               チラシの特売情報をみんなと共有しました

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { ClipboardList, Plus, X, Trash2 } from "lucide-react";
 import Header from "../components/Header";
 import Toast from "../components/Toast";
 import { useSound } from "../hooks/useSound";
@@ -60,13 +61,13 @@ export default function ShoppingListPage() {
       <main className="max-w-lg mx-auto px-4 mt-6 space-y-5">
         {/* ヘッダー + 作成ボタン */}
         <div className="flex items-center justify-between">
-          <h1 className="font-bold text-lg">📝 買い物リスト</h1>
+          <h1 className="font-bold text-lg flex items-center gap-1.5"><ClipboardList className="w-5 h-5" /> 買い物リスト</h1>
           <button
             onClick={() => setShowNew(true)}
             className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-medium
                        hover:bg-primary-hover active:scale-95 transition-all shadow-sm"
           >
-            + 新しいリスト
+            <Plus className="w-4 h-4 inline -mt-0.5" /> 新しいリスト
           </button>
         </div>
 
@@ -99,7 +100,7 @@ export default function ShoppingListPage() {
                 onClick={() => { setShowNew(false); setGroupName(""); }}
                 className="text-muted text-sm px-2 hover:text-foreground"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -108,7 +109,7 @@ export default function ShoppingListPage() {
         {/* グループ一覧 */}
         {groups.length === 0 ? (
           <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-8 text-center">
-            <p className="text-4xl mb-3">📝</p>
+            <ClipboardList className="w-10 h-10 mx-auto mb-3 text-muted" />
             <p className="text-sm text-muted">
               まだリストがありません
               <br />
@@ -125,7 +126,7 @@ export default function ShoppingListPage() {
                 <div
                   key={group.id}
                   className={`bg-card-bg rounded-2xl shadow-sm border p-4 flex items-center gap-3
-                    ${allDone ? "border-accent/40 bg-accent/5" : "border-border/50"}`}
+                    ${allDone ? "border-accent/40 bg-emerald-50" : "border-border/50"}`}
                 >
                   <Link
                     href={`/shopping-list/${group.id}`}
@@ -173,7 +174,7 @@ export default function ShoppingListPage() {
                     className="text-muted hover:text-red-500 transition-colors shrink-0 p-2"
                     title="削除"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               );

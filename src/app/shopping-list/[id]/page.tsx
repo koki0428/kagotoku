@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, use } from "react";
 import Link from "next/link";
+import { Search, ArrowLeft, X, ShoppingCart, Trash2, CheckCircle, Check, PartyPopper } from "lucide-react";
 import Header from "../../components/Header";
 import Toast from "../../components/Toast";
 import { useSound } from "../../hooks/useSound";
@@ -99,13 +100,13 @@ export default function ShoppingGroupDetail({
       <div className="min-h-screen pb-20">
         <Header />
         <main className="max-w-lg mx-auto px-4 mt-6 text-center">
-          <p className="text-4xl mb-3">🔍</p>
+          <Search className="w-10 h-10 mx-auto mb-3 text-muted" />
           <p className="text-sm text-muted mb-4">リストが見つかりません</p>
           <Link
             href="/shopping-list"
-            className="text-primary text-sm font-medium hover:underline"
+            className="text-primary text-sm font-medium hover:underline inline-flex items-center gap-1"
           >
-            ← リスト一覧に戻る
+            <ArrowLeft className="w-4 h-4" /> リスト一覧に戻る
           </Link>
         </main>
       </div>
@@ -127,7 +128,7 @@ export default function ShoppingGroupDetail({
         <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
           <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl px-10 py-8
                           text-center animate-slide-up">
-            <p className="text-5xl mb-3">🎉</p>
+            <PartyPopper className="w-12 h-12 mx-auto mb-3 text-accent" />
             <p className="text-lg font-bold text-accent">買い物完了！</p>
             <p className="text-xs text-muted mt-1">全商品をチェックしました</p>
           </div>
@@ -141,7 +142,7 @@ export default function ShoppingGroupDetail({
             href="/shopping-list"
             className="text-xs text-muted hover:text-primary transition-colors"
           >
-            ← リスト一覧
+            <ArrowLeft className="w-3.5 h-3.5 inline -mt-0.5" /> リスト一覧
           </Link>
 
           <div className="mt-2">
@@ -166,7 +167,7 @@ export default function ShoppingGroupDetail({
                   onClick={() => setEditingName(false)}
                   className="text-muted text-sm"
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
@@ -242,7 +243,7 @@ export default function ShoppingGroupDetail({
         {activeItems.length > 0 && (
           <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
             <h3 className="font-bold text-sm mb-3 flex items-center gap-1.5">
-              🛒 未購入
+              <ShoppingCart className="w-4 h-4" /> 未購入
               <span className="text-xs font-normal text-muted">
                 ({activeItems.length}件)
               </span>
@@ -273,7 +274,7 @@ export default function ShoppingGroupDetail({
                     onClick={() => handleDeleteItem(item.id)}
                     className="text-muted hover:text-red-500 transition-colors shrink-0 text-sm"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </li>
               ))}
@@ -286,7 +287,7 @@ export default function ShoppingGroupDetail({
           <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-sm text-muted flex items-center gap-1.5">
-                ✅ 購入済み
+                <CheckCircle className="w-4 h-4" /> 購入済み
                 <span className="text-xs font-normal">
                   ({completedItems.length}件)
                 </span>
@@ -309,7 +310,7 @@ export default function ShoppingGroupDetail({
                     className="w-6 h-6 rounded-full border-2 bg-accent border-accent text-white
                                shrink-0 flex items-center justify-center transition-colors"
                   >
-                    <span className="text-xs">✓</span>
+                    <Check className="w-3 h-3" />
                   </button>
                   <p className="flex-1 min-w-0 text-sm text-muted line-through truncate">
                     {item.productName}
@@ -318,7 +319,7 @@ export default function ShoppingGroupDetail({
                     onClick={() => handleDeleteItem(item.id)}
                     className="text-muted hover:text-red-500 transition-colors shrink-0 text-sm"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </li>
               ))}
@@ -329,7 +330,7 @@ export default function ShoppingGroupDetail({
         {/* 空状態 */}
         {group.items.length === 0 && (
           <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-8 text-center">
-            <p className="text-3xl mb-2">🛒</p>
+            <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-muted" />
             <p className="text-sm text-muted">
               商品名を入力して追加しよう
             </p>

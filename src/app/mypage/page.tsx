@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { User, Pencil, Mail, Key, BarChart3, Trash2, AlertTriangle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -115,10 +116,10 @@ export default function MyPage() {
   return (
     <div className="min-h-screen pb-24">
       {/* ヘッダー */}
-      <div className="hero-gradient text-white px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
         <div className="max-w-lg mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors">
               ← 戻る
             </Link>
           </div>
@@ -145,8 +146,8 @@ export default function MyPage() {
         {message && (
           <div className={`rounded-xl px-4 py-3 text-sm font-medium animate-fade-in ${
             messageType === "success"
-              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-400 border border-red-500/20"
+              ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+              : "bg-red-50 text-red-600 border border-red-200"
           }`}>
             {message}
           </div>
@@ -177,7 +178,7 @@ export default function MyPage() {
 
         {/* 統計カード */}
         <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-          <h3 className="font-bold text-sm mb-3">あなたの実績</h3>
+          <h3 className="font-bold text-sm mb-3 flex items-center gap-1.5"><BarChart3 className="w-4 h-4 text-primary" /> あなたの実績</h3>
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-background rounded-xl p-3 text-center">
               <p className="text-[10px] text-muted mb-1">累計節約貢献額</p>
@@ -208,7 +209,7 @@ export default function MyPage() {
 
         {/* ニックネーム変更 */}
         <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-          <h3 className="font-bold text-sm mb-3">ニックネーム</h3>
+          <h3 className="font-bold text-sm mb-3 flex items-center gap-1.5"><Pencil className="w-4 h-4 text-primary" /> ニックネーム</h3>
           <div className="flex gap-2">
             <input
               type="text"
@@ -230,7 +231,7 @@ export default function MyPage() {
 
         {/* メールアドレス変更 */}
         <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-          <h3 className="font-bold text-sm mb-3">メールアドレス</h3>
+          <h3 className="font-bold text-sm mb-3 flex items-center gap-1.5"><Mail className="w-4 h-4 text-primary" /> メールアドレス</h3>
           <div className="flex gap-2">
             <input
               type="email"
@@ -254,7 +255,7 @@ export default function MyPage() {
 
         {/* パスワード変更 */}
         <div className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-          <h3 className="font-bold text-sm mb-3">パスワード変更</h3>
+          <h3 className="font-bold text-sm mb-3 flex items-center gap-1.5"><Key className="w-4 h-4 text-primary" /> パスワード変更</h3>
           <div className="space-y-3">
             <input
               type="password"
@@ -296,9 +297,9 @@ export default function MyPage() {
         {/* アカウント削除 */}
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="w-full text-sm text-red-400 hover:text-red-500 py-3 transition-colors"
+          className="w-full text-sm text-red-600 hover:text-red-700 py-3 transition-colors flex items-center justify-center gap-1.5"
         >
-          アカウントを削除する
+          <Trash2 className="w-4 h-4" /> アカウントを削除する
         </button>
       </main>
 
@@ -313,7 +314,7 @@ export default function MyPage() {
             className="relative bg-card-bg rounded-2xl shadow-xl p-6 w-full max-w-sm animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-center text-3xl mb-3">⚠️</p>
+            <AlertTriangle className="w-8 h-8 text-amber-600 mx-auto mb-3" />
             <h3 className="text-base font-bold text-center mb-2">
               アカウント削除
             </h3>

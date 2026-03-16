@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ClipboardList, X } from "lucide-react";
 import type { Category } from "../types";
 import { CATEGORY_LABELS } from "../types";
 
@@ -54,8 +55,8 @@ export default function ReceiptModal({ data, onConfirm, onClose }: Props) {
         <div className="p-5">
           {/* ヘッダー */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-base">📋 レシート内容の確認</h2>
-            <button onClick={onClose} className="text-muted text-lg px-2">✕</button>
+            <h2 className="font-bold text-base flex items-center gap-1.5"><ClipboardList className="w-5 h-5" /> レシート内容の確認</h2>
+            <button onClick={onClose} className="text-muted text-lg px-2"><X className="w-5 h-5" /></button>
           </div>
 
           {/* 店名・日付 */}
@@ -100,7 +101,7 @@ export default function ReceiptModal({ data, onConfirm, onClose }: Props) {
                       onClick={() => removeItem(i)}
                       className="text-muted text-sm hover:text-red-500 px-1"
                     >
-                      ✕
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="flex items-center gap-2">

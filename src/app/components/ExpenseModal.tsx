@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Category, CATEGORY_LABELS, PricePost } from "../types";
 import { addPost, getPostsByDate, deletePost, searchPosts } from "../storage";
 import { useSound } from "../hooks/useSound";
+import { Lightbulb, Sparkles, Trash2, X } from "lucide-react";
 
 interface Props {
   date: string; // YYYY-MM-DD
@@ -140,9 +141,9 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
           <h2 className="font-bold text-base">{dateLabel}</h2>
           <button
             onClick={onClose}
-            className="text-muted text-xl hover:text-foreground"
+            className="text-muted hover:text-foreground transition-colors"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -201,28 +202,28 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
           {saved && comparison && (
             <div className={`rounded-xl p-4 text-center animate-fade-in mb-4 ${
               comparison.savings > 0
-                ? "bg-amber-500/10 border border-amber-500/20"
-                : "bg-accent/10 border border-accent/20"
+                ? "bg-amber-50 border border-amber-200"
+                : "bg-emerald-50 border border-emerald-200"
             }`}>
               {comparison.savings > 0 ? (
                 <>
-                  <p className="text-sm font-bold text-amber-400 mb-1">
-                    💡 ¥{comparison.savings.toLocaleString()}円 お得に買えた店があります！
+                  <p className="text-sm font-bold text-amber-600 mb-1 inline-flex items-center gap-1 justify-center">
+                    <Lightbulb className="w-4 h-4" /> ¥<span className="font-display">{comparison.savings.toLocaleString()}</span>円 お得に買えた店があります！
                   </p>
-                  <p className="text-xs text-amber-400/80">
-                    {comparison.communityStore} で ¥{comparison.communityMin?.toLocaleString()}
-                    （あなた: ¥{comparison.enteredPrice.toLocaleString()}）
+                  <p className="text-xs text-amber-500">
+                    {comparison.communityStore} で ¥<span className="font-display">{comparison.communityMin?.toLocaleString()}</span>
+                    （あなた: ¥<span className="font-display">{comparison.enteredPrice.toLocaleString()}</span>）
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-bold text-accent mb-1">
-                    🎉 最安値で買えています！
+                  <p className="text-sm font-bold text-emerald-500 mb-1 inline-flex items-center gap-1 justify-center">
+                    <Sparkles className="w-4 h-4" /> 最安値で買えています！
                   </p>
                   {comparison.communityMin && (
-                    <p className="text-xs text-accent/80">
-                      他の投稿: ¥{comparison.communityMin.toLocaleString()}
-                      （あなた: ¥{comparison.enteredPrice.toLocaleString()}）
+                    <p className="text-xs text-emerald-500">
+                      他の投稿: ¥<span className="font-display">{comparison.communityMin.toLocaleString()}</span>
+                      （あなた: ¥<span className="font-display">{comparison.enteredPrice.toLocaleString()}</span>）
                     </p>
                   )}
                 </>
@@ -234,7 +235,7 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
           {existing.length > 0 && (
             <div>
               <p className="text-xs text-muted mb-2">
-                この日の記録（{existing.length}件）
+                この日の記録（<span className="font-display">{existing.length}</span>件）
               </p>
               <ul className="divide-y divide-border">
                 {existing.map((post) => (
@@ -252,14 +253,14 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
                       </p>
                     </div>
                     <p className="text-base font-bold text-primary shrink-0">
-                      ¥{post.price.toLocaleString()}
+                      ¥<span className="font-display">{post.price.toLocaleString()}</span>
                     </p>
                     <button
                       onClick={() => setDeleteTarget(post.id)}
                       className="text-muted hover:text-red-500 transition-colors shrink-0 p-1"
                       title="削除"
                     >
-                      🗑️
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </li>
                 ))}

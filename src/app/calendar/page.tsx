@@ -7,6 +7,7 @@ import PieChart from "../components/PieChart";
 import BarChart from "../components/BarChart";
 import ReceiptModal from "../components/ReceiptModal";
 import Toast from "../components/Toast";
+import { Camera, CircleDot, BarChart3, TrendingUp } from "lucide-react";
 import {
   getPosts,
   savePosts,
@@ -248,7 +249,7 @@ export default function CalendarPage() {
       savePosts(posts);
       setReceiptData(null);
       setRefreshKey((k) => k + 1);
-      setToastMsg(`📋 ${data.items.length}件の支出を登録しました`);
+      setToastMsg(`${data.items.length}件の支出を登録しました`);
       setShowToast(true);
     },
     []
@@ -295,7 +296,7 @@ export default function CalendarPage() {
             </>
           ) : (
             <>
-              <span>📷</span>
+              <Camera className="w-5 h-5" />
               レシートを撮影して自動入力
             </>
           )}
@@ -559,18 +560,18 @@ export default function CalendarPage() {
             {(monthTotal > 0 || prevMonthTotal > 0) && (
               <section className={`rounded-2xl shadow-sm border p-4 text-center ${
                 prevMonthTotal > 0 && monthTotal <= prevMonthTotal
-                  ? "bg-accent/10 border-accent/20"
+                  ? "bg-emerald-50 border-emerald-200"
                   : prevMonthTotal > 0
-                    ? "bg-amber-500/10 border-amber-500/20"
+                    ? "bg-amber-50 border-amber-200"
                     : "bg-card-bg border-border"
               }`}>
-                <h2 className="font-bold text-sm mb-2">
-                  📈 先月との比較
+                <h2 className="font-bold text-sm mb-2 flex items-center justify-center gap-1.5">
+                  <TrendingUp className="w-4 h-4" /> 先月との比較
                 </h2>
                 {prevMonthTotal > 0 ? (
                   <>
                     <p className={`text-2xl font-bold ${
-                      monthTotal <= prevMonthTotal ? "text-accent" : "text-amber-400"
+                      monthTotal <= prevMonthTotal ? "text-accent" : "text-amber-600"
                     }`}>
                       {monthTotal <= prevMonthTotal
                         ? `¥${(prevMonthTotal - monthTotal).toLocaleString()} 節約！`
@@ -591,8 +592,8 @@ export default function CalendarPage() {
             {/* カテゴリ別ドーナツグラフ */}
             {categorySummary.length > 0 && (
               <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-                <h2 className="font-bold text-base mb-3">
-                  🍩 {currentMonth}月 カテゴリ別
+                <h2 className="font-bold text-base mb-3 flex items-center gap-1.5">
+                  <CircleDot className="w-5 h-5" /> {currentMonth}月 カテゴリ別
                 </h2>
                 <div className="flex justify-center">
                   <PieChart
@@ -609,8 +610,8 @@ export default function CalendarPage() {
             {/* 過去6ヶ月の支出推移 */}
             {past6Months.some((m) => m.value > 0) && (
               <section className="bg-card-bg rounded-2xl shadow-sm border border-border p-4">
-                <h2 className="font-bold text-base mb-3">
-                  📊 支出推移（過去6ヶ月）
+                <h2 className="font-bold text-base mb-3 flex items-center gap-1.5">
+                  <BarChart3 className="w-5 h-5" /> 支出推移（過去6ヶ月）
                 </h2>
                 <BarChart data={past6Months} height={140} />
               </section>

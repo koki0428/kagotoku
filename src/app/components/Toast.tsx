@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CheckCircle, Info, AlertTriangle, X } from "lucide-react";
 
 interface ToastProps {
   message: string;
@@ -11,9 +12,9 @@ interface ToastProps {
 }
 
 const ICONS = {
-  success: "✅",
-  info: "ℹ️",
-  warning: "⚠️",
+  success: <CheckCircle className="w-5 h-5 shrink-0" />,
+  info: <Info className="w-5 h-5 shrink-0" />,
+  warning: <AlertTriangle className="w-5 h-5 shrink-0" />,
 };
 
 const BG_COLORS = {
@@ -51,10 +52,10 @@ export default function Toast({
                   flex items-center gap-2.5 transition-all duration-300
                   ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
     >
-      <span className="text-lg">{ICONS[type]}</span>
+      {ICONS[type]}
       <p className="text-sm font-medium flex-1">{message}</p>
       <button onClick={() => { setVisible(false); setTimeout(onClose, 300); }} className="opacity-70 hover:opacity-100">
-        ✕
+        <X className="w-4 h-4" />
       </button>
     </div>
   );

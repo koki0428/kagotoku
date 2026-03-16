@@ -29,6 +29,7 @@ import BarcodeScanner from "./components/BarcodeScanner";
 import CloudSyncBanner from "./components/CloudSyncBanner";
 import { useSound } from "./hooks/useSound";
 import Link from "next/link";
+import { Camera, ScanBarcode, MapPin, Heart, Package, ShoppingBag, Tag, Megaphone, Crown, Zap } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -365,7 +366,7 @@ export default function Home() {
       />
 
       {/* ===== ヒーローセクション ===== */}
-      <div className="hero-gradient text-white px-4 pt-8 pb-10 shadow-lg">
+      <div className="hero-gradient text-foreground px-4 pt-8 pb-10 shadow-lg">
         <div className="max-w-lg mx-auto">
           {/* ユーザー情報 */}
           <div className="flex items-center justify-between mb-6">
@@ -375,12 +376,12 @@ export default function Home() {
                 <p className="font-bold text-sm">
                   {profile.nickname || "ゲスト"}
                 </p>
-                <p className="text-xs opacity-80">{badge.label}</p>
+                <p className="text-xs text-foreground/70">{badge.label}</p>
               </div>
             </Link>
             <div className="flex items-center gap-2">
               <SoundToggle />
-              <div className="bg-white/20 backdrop-blur rounded-xl px-3 py-1.5">
+              <div className="bg-white/80 backdrop-blur border border-border rounded-xl px-3 py-1.5">
                 <p className="text-sm font-bold">
                   {heroPoints}<span className="text-xs font-normal ml-0.5">pt</span>
                 </p>
@@ -390,21 +391,21 @@ export default function Home() {
 
           {/* キャッチコピー */}
           <h1 className="text-2xl font-bold mb-1">今日いくら節約できる？</h1>
-          <p className="text-sm opacity-85 mb-6">
+          <p className="text-sm text-foreground/70 mb-6">
             みんなの投稿で、いちばんおトクを見つけよう
           </p>
 
           {/* 節約カード */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center">
-              <p className="text-xs opacity-80 mb-1">今日の節約額</p>
-              <p className="text-2xl font-bold">
+            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center">
+              <p className="text-xs text-foreground/70 mb-1">今日の節約額</p>
+              <p className="text-2xl font-bold font-display">
                 ¥{todaySavings.toLocaleString()}
               </p>
             </div>
-            <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center">
-              <p className="text-xs opacity-80 mb-1">今月の累計節約</p>
-              <p className="text-2xl font-bold">
+            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl p-4 text-center">
+              <p className="text-xs text-foreground/70 mb-1">今月の累計節約</p>
+              <p className="text-2xl font-bold font-display">
                 ¥{monthSavings.toLocaleString()}
               </p>
             </div>
@@ -438,7 +439,7 @@ export default function Home() {
                 <span className="inline-block w-5 h-5 border-2 border-primary border-t-transparent
                                  rounded-full animate-spin" />
               ) : (
-                <span className="text-lg">📷</span>
+                <Camera className="w-5 h-5" />
               )}
             </button>
             <button
@@ -447,7 +448,7 @@ export default function Home() {
                          hover:border-primary hover:text-primary transition-colors"
               title="バーコードスキャン"
             >
-              <span className="text-lg">▦</span>
+              <ScanBarcode className="w-5 h-5" />
             </button>
             <button
               onClick={handleSearch}
@@ -465,12 +466,12 @@ export default function Home() {
           <div ref={resultsRef} className="space-y-5">
             {/* 節約額 */}
             {allPrices.length >= 2 && (
-              <div className="bg-accent/10 border border-accent/20
+              <div className="bg-rose-50 border border-rose-100
                               rounded-2xl p-5 text-center shadow-sm">
                 <p className="text-sm text-accent font-medium mb-1">
                   最大おトク額
                 </p>
-                <p className="text-4xl font-bold text-accent">
+                <p className="text-4xl font-bold font-display text-accent">
                   ¥{savings.toLocaleString()}
                 </p>
                 <p className="text-xs text-muted mt-2">
@@ -482,7 +483,7 @@ export default function Home() {
             {/* みんなの投稿 */}
             <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-bold text-base">📍 みんなの投稿価格</h2>
+                <h2 className="font-bold text-base flex items-center gap-1.5"><MapPin className="w-4 h-4 text-primary" /> みんなの投稿価格</h2>
                 <div className="flex items-center gap-2">
                   {!isFavorited(query) && (
                     <button
@@ -490,7 +491,7 @@ export default function Home() {
                       className="text-xs text-muted border border-border rounded-lg px-2.5 py-1
                                  hover:border-primary hover:text-primary transition-colors"
                     >
-                      💛 お気に入り
+                      <Heart className="w-3.5 h-3.5 inline-block mr-0.5" /> お気に入り
                     </button>
                   )}
                   <button
@@ -503,7 +504,7 @@ export default function Home() {
               </div>
 
               {isFavorited(query) && (
-                <p className="text-xs text-primary mb-2">💛 お気に入り登録済み</p>
+                <p className="text-xs text-primary mb-2 flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> お気に入り登録済み</p>
               )}
 
               {showPostForm && (
@@ -570,7 +571,7 @@ export default function Home() {
 
             {/* Amazon */}
             <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
-              <h2 className="font-bold text-base mb-3">📦 Amazon 参考価格</h2>
+              <h2 className="font-bold text-base mb-3 flex items-center gap-1.5"><Package className="w-4 h-4 text-primary" /> Amazon 参考価格</h2>
               <p className="text-xs text-muted mb-3">※ モックデータ（後日API連携予定）</p>
               <ul className="divide-y divide-border/60">
                 {amazonResults.map((item, i) => (
@@ -599,9 +600,9 @@ export default function Home() {
             {!adFree && (
               <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4 text-center">
                 <p className="text-[10px] text-muted mb-2">広告</p>
-                <div className="bg-white/5 border border-white/10 rounded-xl py-6 px-4">
+                <div className="bg-card-bg border border-border rounded-xl py-6 px-4">
                   <p className="text-sm font-medium text-foreground/60">
-                    📢 スポンサー広告エリア
+                    <Megaphone className="w-4 h-4 inline-block mr-1" /> スポンサー広告エリア
                   </p>
                   <p className="text-xs text-muted mt-1">
                     1000ptで1ヶ月非表示にできます
@@ -613,7 +614,7 @@ export default function Home() {
                     className="inline-block mt-3 text-xs text-primary font-medium
                                hover:underline transition-colors"
                   >
-                    👑 月額¥300で広告を完全非表示にする →
+                    <Crown className="w-3.5 h-3.5 inline-block mr-0.5" /> 月額¥300で広告を完全非表示にする →
                   </Link>
                 )}
               </div>
@@ -621,10 +622,10 @@ export default function Home() {
 
             {/* ===== リアルタイムフィード ===== */}
             <section className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4">
-              <h2 className="font-bold text-base mb-3">⚡ 最近の投稿</h2>
+              <h2 className="font-bold text-base mb-3 flex items-center gap-1.5"><Zap className="w-4 h-4 text-primary" /> 最近の投稿</h2>
               {recentPosts.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-4xl mb-3">🛍️</p>
+                  <ShoppingBag className="w-10 h-10 text-primary/40 mx-auto mb-3" />
                   <p className="text-sm text-muted">
                     まだ投稿がありません
                     <br />
@@ -636,7 +637,7 @@ export default function Home() {
                   {recentPosts.map((post, i) => (
                     <li
                       key={post.id}
-                      className="animate-feed-in flex items-center gap-3 bg-background
+                      className="animate-feed-in flex items-center gap-3 bg-white
                                  rounded-xl p-3 hover:bg-primary/5 transition-colors cursor-pointer"
                       style={{ animationDelay: `${i * 50}ms`, animationFillMode: "both" }}
                       onClick={() => {
@@ -644,9 +645,9 @@ export default function Home() {
                         doSearch(post.productName);
                       }}
                     >
-                      <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center
-                                      justify-center shrink-0 text-sm">
-                        🏷️
+                      <div className="w-9 h-9 bg-primary/5 rounded-full flex items-center
+                                      justify-center shrink-0">
+                        <Tag className="w-4 h-4 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
