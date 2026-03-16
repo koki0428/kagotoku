@@ -54,11 +54,30 @@ export default function Home() {
   const [showBarcode, setShowBarcode] = useState(false);
   const cameraRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const [isPremium, setIsPremium] = useState(false);
   const { play } = useSound();
 
   useEffect(() => {
     setAdFree(isAdFreeActive());
   }, [refreshKey]);
+
+  // プレミアム状態チェック
+  useEffect(() => {
+    if (!user) { setIsPremium(false); return; }
+    (async () => {
+      const { supabase } = await import("./lib/supabase");
+      const { data } = await supabase
+        .from("profiles")
+        .select("is_premium, premium_expires_at")
+        .eq("id", user.id)
+        .single();
+      if (data?.is_premium && data.premium_expires_at &&
+          new Date(data.premium_expires_at).getTime() > Date.now()) {
+        setIsPremium(true);
+        setAdFree(true);
+      }
+    })().catch(() => {});
+  }, [user, refreshKey]);
 
   // オンボーディングチェック
   useEffect(() => {
@@ -588,6 +607,15 @@ export default function Home() {
                     1000ptで1ヶ月非表示にできます
                   </p>
                 </div>
+                {!isPremium && (
+                  <Link
+                    href="/premium"
+                    className="inline-block mt-3 text-xs text-primary font-medium
+                               hover:underline transition-colors"
+                  >
+                    👑 月額¥300で広告を完全非表示にする →
+                  </Link>
+                )}
               </div>
             )}
 

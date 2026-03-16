@@ -7,8 +7,18 @@ create table if not exists profiles (
   nickname text default '',
   points integer default 0,
   post_count integer default 0,
+  is_premium boolean default false,
+  premium_expires_at timestamptz,
+  stripe_customer_id text,
+  stripe_subscription_id text,
   created_at timestamptz default now()
 );
+
+-- 既存テーブルへのカラム追加（既にテーブルがある場合）:
+-- alter table profiles add column if not exists is_premium boolean default false;
+-- alter table profiles add column if not exists premium_expires_at timestamptz;
+-- alter table profiles add column if not exists stripe_customer_id text;
+-- alter table profiles add column if not exists stripe_subscription_id text;
 
 alter table profiles enable row level security;
 
