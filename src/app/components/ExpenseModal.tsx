@@ -201,15 +201,15 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
           {saved && comparison && (
             <div className={`rounded-xl p-4 text-center animate-fade-in mb-4 ${
               comparison.savings > 0
-                ? "bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200"
-                : "bg-gradient-to-r from-green-50 to-emerald-50 border border-accent/30"
+                ? "bg-amber-500/10 border border-amber-500/20"
+                : "bg-accent/10 border border-accent/20"
             }`}>
               {comparison.savings > 0 ? (
                 <>
-                  <p className="text-sm font-bold text-orange-700 mb-1">
+                  <p className="text-sm font-bold text-amber-400 mb-1">
                     💡 ¥{comparison.savings.toLocaleString()}円 お得に買えた店があります！
                   </p>
-                  <p className="text-xs text-orange-600">
+                  <p className="text-xs text-amber-400/80">
                     {comparison.communityStore} で ¥{comparison.communityMin?.toLocaleString()}
                     （あなた: ¥{comparison.enteredPrice.toLocaleString()}）
                   </p>
@@ -220,7 +220,7 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
                     🎉 最安値で買えています！
                   </p>
                   {comparison.communityMin && (
-                    <p className="text-xs text-emerald-600">
+                    <p className="text-xs text-accent/80">
                       他の投稿: ¥{comparison.communityMin.toLocaleString()}
                       （あなた: ¥{comparison.enteredPrice.toLocaleString()}）
                     </p>

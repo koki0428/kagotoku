@@ -334,7 +334,7 @@ export default function FlyerPage() {
                           </span>
                         )}
                         {item.note && (
-                          <span className="text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
                             {item.note}
                           </span>
                         )}

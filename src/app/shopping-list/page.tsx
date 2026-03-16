@@ -125,7 +125,7 @@ export default function ShoppingListPage() {
                 <div
                   key={group.id}
                   className={`bg-card-bg rounded-2xl shadow-sm border p-4 flex items-center gap-3
-                    ${allDone ? "border-accent/40 bg-green-50/50" : "border-border/50"}`}
+                    ${allDone ? "border-accent/40 bg-accent/5" : "border-border/50"}`}
                 >
                   <Link
                     href={`/shopping-list/${group.id}`}

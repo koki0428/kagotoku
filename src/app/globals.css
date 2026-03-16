@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf7f2;
-  --foreground: #333333;
-  --primary: #e8725a;
-  --primary-hover: #d4604a;
-  --accent: #4caf50;
-  --card-bg: #ffffff;
-  --border: #e0d8cf;
-  --muted: #888888;
+  --background: #0a0a0f;
+  --foreground: #e8e8ef;
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --accent: #22d3ee;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+  --muted: #6b7280;
 }
 
 @theme inline {
@@ -27,11 +27,48 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
-    "Yu Gothic", "Meiryo", sans-serif;
+  font-family: "Noto Sans JP", "Inter", "SF Pro Display", "Hiragino Sans",
+    system-ui, sans-serif;
 }
 
-/* ポイント獲得アニメーション */
+/* ===== グラデーション・ユーティリティ ===== */
+
+.gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #06b6d4 100%);
+  transition: all 0.3s ease;
+}
+.gradient-btn:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #0891b2 100%);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+.gradient-btn:active {
+  transform: scale(0.97);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== ポイント獲得アニメーション ===== */
 @keyframes pointsFloat {
   0% { opacity: 0; transform: translateY(10px) scale(0.8); }
   20% { opacity: 1; transform: translateY(-10px) scale(1.1); }
@@ -42,7 +79,7 @@ body {
   animation: pointsFloat 2s ease-out forwards;
 }
 
-/* モーダル */
+/* ===== モーダル ===== */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -58,19 +95,34 @@ body {
   animation: slideUp 0.25s ease-out;
 }
 
-/* ヒーローグラデーション */
+/* ===== ヒーローメッシュグラデーション ===== */
 .hero-gradient {
-  background: linear-gradient(135deg, #e8725a 0%, #f4a261 50%, #e8725a 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 6s ease infinite;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+    linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+  background-size: 100% 100%;
+  animation: meshShift 8s ease infinite;
 }
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes meshShift {
+  0%, 100% {
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+      linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+  }
+  50% {
+    background:
+      radial-gradient(ellipse at 40% 30%, rgba(139, 92, 246, 0.35) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 60%, rgba(6, 182, 212, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 70%, rgba(99, 102, 241, 0.25) 0%, transparent 50%),
+      linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+  }
 }
 
-/* フィードアニメーション */
+/* ===== フィードアニメーション ===== */
 @keyframes feedSlideIn {
   from { opacity: 0; transform: translateX(-12px); }
   to { opacity: 1; transform: translateX(0); }
@@ -79,7 +131,7 @@ body {
   animation: feedSlideIn 0.3s ease-out;
 }
 
-/* オンボーディングスライド */
+/* ===== オンボーディングスライド ===== */
 @keyframes onboardFadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -88,11 +140,25 @@ body {
   animation: onboardFadeIn 0.4s ease-out;
 }
 
-/* アラートパルス */
+/* ===== アラートパルス ===== */
 @keyframes alertPulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.2); }
 }
 .animate-alert-pulse {
   animation: alertPulse 1.5s ease-in-out infinite;
+}
+
+/* ===== グロー ===== */
+@keyframes subtleGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
+}
+.animate-glow {
+  animation: subtleGlow 3s ease-in-out infinite;
+}
+
+/* ===== インプットのダーク対応 ===== */
+input, textarea, select {
+  color-scheme: dark;
 }

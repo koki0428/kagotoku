@@ -20,11 +20,13 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-primary text-white py-4 px-4 shadow-md">
+      <header className="glass text-white py-4 px-4 shadow-lg">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-wide">🛒 カゴトク</h1>
-            <p className="text-sm opacity-90 mt-1">
+            <h1 className="text-2xl font-bold tracking-wide">
+              <span className="gradient-text">🛒 カゴトク</span>
+            </h1>
+            <p className="text-sm text-foreground/70 mt-1">
               かしこく買い物、もっとおトク
             </p>
           </div>
@@ -32,8 +34,9 @@ export default function Header() {
             {user ? (
               <Link
                 href="/mypage"
-                className="bg-white/20 backdrop-blur rounded-xl px-3 py-2 text-sm font-medium
-                           hover:bg-white/30 transition-colors flex items-center gap-1.5"
+                className="bg-white/10 backdrop-blur rounded-xl px-3 py-2 text-sm font-medium
+                           hover:bg-white/20 transition-colors flex items-center gap-1.5
+                           border border-white/10"
               >
                 <span className="text-xs">👤</span>
                 {displayName}
@@ -41,8 +44,8 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setShowLogin(true)}
-                className="bg-white/20 backdrop-blur rounded-xl px-3 py-2 text-sm font-medium
-                           hover:bg-white/30 transition-colors"
+                className="bg-white/10 backdrop-blur rounded-xl px-3 py-2 text-sm font-medium
+                           hover:bg-white/20 transition-colors border border-white/10"
               >
                 ログイン
               </button>

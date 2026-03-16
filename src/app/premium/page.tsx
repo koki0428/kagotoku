@@ -96,17 +96,17 @@ function PremiumContent() {
       <main className="max-w-lg mx-auto px-4 -mt-4 space-y-4">
         {/* 成功メッセージ */}
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 text-center animate-fade-in">
             <p className="text-2xl mb-2">🎉</p>
-            <p className="text-sm font-bold text-green-700">プレミアムに登録しました！</p>
-            <p className="text-xs text-green-600 mt-1">すべての特典をお楽しみください</p>
+            <p className="text-sm font-bold text-emerald-400">プレミアムに登録しました！</p>
+            <p className="text-xs text-emerald-400/80 mt-1">すべての特典をお楽しみください</p>
           </div>
         )}
 
         {/* キャンセルメッセージ */}
         {canceled && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center animate-fade-in">
-            <p className="text-sm text-amber-700">決済がキャンセルされました</p>
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-center animate-fade-in">
+            <p className="text-sm text-amber-400">決済がキャンセルされました</p>
           </div>
         )}
 

@@ -24,7 +24,7 @@ export default function BottomNav() {
   }, []);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card-bg/95 backdrop-blur-md border-t border-border shadow-lg z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.3)] z-50">
       <div className="max-w-lg mx-auto flex">
         {tabs.map((tab) => {
           const active = pathname === tab.href;

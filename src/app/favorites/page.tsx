@@ -88,7 +88,7 @@ export default function FavoritesPage() {
 
         {/* アラート通知 */}
         {alerts.length > 0 && (
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-accent/30
+          <div className="bg-accent/10 border border-accent/20
                           rounded-2xl p-4 shadow-sm">
             <h2 className="font-bold text-sm text-accent mb-2">
               🔔 目標価格を下回りました！
@@ -97,7 +97,7 @@ export default function FavoritesPage() {
               {alerts.map((alert) => (
                 <li
                   key={alert.favorite.id}
-                  className="bg-white rounded-xl p-3 flex justify-between items-center"
+                  className="bg-background rounded-xl p-3 flex justify-between items-center"
                 >
                   <div>
                     <p className="text-sm font-medium">

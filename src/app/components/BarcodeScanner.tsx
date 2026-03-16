@@ -127,7 +127,7 @@ export default function BarcodeScanner({ onDetected, onClose }: Props) {
         {status === "error" && (
           <button
             onClick={onClose}
-            className="bg-white text-foreground px-6 py-3 rounded-xl font-medium"
+            className="bg-card-bg text-foreground px-6 py-3 rounded-xl font-medium border border-border"
           >
             閉じる
           </button>

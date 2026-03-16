@@ -37,8 +37,8 @@ export default function PushNotificationBanner() {
   // 既に許可済み
   if (permission === "granted") {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl px-4 py-2.5 text-center">
-        <p className="text-xs text-blue-600 font-medium">
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl px-4 py-2.5 text-center">
+        <p className="text-xs text-blue-400 font-medium">
           🔔 通知ON — 目標価格を下回ったらお知らせします
         </p>
       </div>
@@ -66,15 +66,15 @@ export default function PushNotificationBanner() {
 
   // ブラウザ直接アクセス: ホーム画面追加を促す
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200
+    <div className="bg-blue-500/10 border border-blue-500/20
                     rounded-2xl px-4 py-3 text-center">
-      <p className="text-xs text-blue-700 font-medium mb-1">
+      <p className="text-xs text-blue-400 font-medium mb-1">
         🔔 プッシュ通知を使うには
       </p>
-      <p className="text-[11px] text-blue-600">
+      <p className="text-[11px] text-blue-400/80">
         ホーム画面に追加すると通知が使えます
       </p>
-      <p className="text-[10px] text-blue-500 mt-1">
+      <p className="text-[10px] text-blue-400/60 mt-1">
         共有ボタン → 「ホーム画面に追加」
       </p>
     </div>

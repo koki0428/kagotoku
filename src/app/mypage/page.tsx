@@ -145,8 +145,8 @@ export default function MyPage() {
         {message && (
           <div className={`rounded-xl px-4 py-3 text-sm font-medium animate-fade-in ${
             messageType === "success"
-              ? "bg-green-50 text-green-700 border border-green-200"
-              : "bg-red-50 text-red-700 border border-red-200"
+              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              : "bg-red-500/10 text-red-400 border border-red-500/20"
           }`}>
             {message}
           </div>

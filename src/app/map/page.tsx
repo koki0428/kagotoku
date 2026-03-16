@@ -211,8 +211,8 @@ export default function MapPage() {
         )}
 
         {geoError && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
-            <p className="text-sm text-red-600">{geoError}</p>
+          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
+            <p className="text-sm text-red-400">{geoError}</p>
           </div>
         )}
 
@@ -232,8 +232,8 @@ export default function MapPage() {
               )}
 
               {shopError && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-2">
-                  <p className="text-xs text-red-600">{shopError}</p>
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-2">
+                  <p className="text-xs text-red-400">{shopError}</p>
                 </div>
               )}
 
@@ -371,7 +371,7 @@ export default function MapPage() {
                             : i === 1
                               ? "text-gray-400"
                               : i === 2
-                                ? "text-amber-700"
+                                ? "text-amber-500"
                                 : "text-muted"
                         }`}
                       >

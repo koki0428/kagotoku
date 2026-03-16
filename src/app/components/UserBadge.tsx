@@ -167,13 +167,13 @@ export default function UserBadge({
 
         {/* 失効間近の警告 */}
         {expiringSoonTotal > 0 && (
-          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-            <p className="text-xs font-medium text-amber-700">
+          <div className="mt-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
+            <p className="text-xs font-medium text-amber-400">
               {expiringSoonTotal}pt がもうすぐ失効します
             </p>
             <ul className="mt-1 space-y-0.5">
               {expiringSoon.map((e) => (
-                <li key={e.id} className="text-[10px] text-amber-600">
+                <li key={e.id} className="text-[10px] text-amber-400/80">
                   {e.amount - e.consumed}pt — 残り{daysUntil(e.expiresAt)}日（{formatDate(e.expiresAt)}まで）
                 </li>
               ))}
@@ -183,8 +183,8 @@ export default function UserBadge({
 
         {/* 広告非表示ステータス */}
         {adFreeActive && remainingDays > 0 && (
-          <div className="mt-3 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-center">
-            <p className="text-xs font-medium text-indigo-600">
+          <div className="mt-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-3 py-2 text-center">
+            <p className="text-xs font-medium text-indigo-400">
               広告非表示 残り{remainingDays}日
             </p>
           </div>
@@ -369,7 +369,7 @@ export default function UserBadge({
                         key={entry.id}
                         className={`rounded-lg px-3 py-2 text-xs ${
                           isSoon
-                            ? "bg-amber-50 border border-amber-200"
+                            ? "bg-amber-500/10 border border-amber-500/20"
                             : "bg-background"
                         }`}
                       >
@@ -383,7 +383,7 @@ export default function UserBadge({
                             )}
                           </span>
                           {isSoon && (
-                            <span className="text-[10px] text-amber-600 font-bold">
+                            <span className="text-[10px] text-amber-400 font-bold">
                               もうすぐ失効
                             </span>
                           )}

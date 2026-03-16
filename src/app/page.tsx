@@ -465,7 +465,7 @@ export default function Home() {
           <div ref={resultsRef} className="space-y-5">
             {/* 節約額 */}
             {allPrices.length >= 2 && (
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-accent/30
+              <div className="bg-accent/10 border border-accent/20
                               rounded-2xl p-5 text-center shadow-sm">
                 <p className="text-sm text-accent font-medium mb-1">
                   最大おトク額
@@ -599,11 +599,11 @@ export default function Home() {
             {!adFree && (
               <div className="bg-card-bg rounded-2xl shadow-sm border border-border/50 p-4 text-center">
                 <p className="text-[10px] text-muted mb-2">広告</p>
-                <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl py-6 px-4">
-                  <p className="text-sm font-medium text-amber-700">
+                <div className="bg-white/5 border border-white/10 rounded-xl py-6 px-4">
+                  <p className="text-sm font-medium text-foreground/60">
                     📢 スポンサー広告エリア
                   </p>
-                  <p className="text-xs text-amber-600/70 mt-1">
+                  <p className="text-xs text-muted mt-1">
                     1000ptで1ヶ月非表示にできます
                   </p>
                 </div>

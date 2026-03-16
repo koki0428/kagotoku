@@ -8,19 +8,19 @@ const STEPS = [
     emoji: "📸",
     title: "買い物中に価格を記録するだけ",
     desc: "見つけた商品の価格をサッと投稿。\nあなたの情報がみんなの節約につながります。",
-    bg: "from-orange-400 to-pink-400",
+    bg: "from-purple-500 to-pink-500",
   },
   {
     emoji: "🗺️",
     title: "近くの店の最安値がわかる",
     desc: "地図で近所のスーパーやドラッグストアの\n価格をかんたんに比較できます。",
-    bg: "from-blue-400 to-cyan-400",
+    bg: "from-blue-500 to-cyan-500",
   },
   {
     emoji: "🤝",
     title: "みんなで節約情報をシェアしよう",
     desc: "投稿するとポイントが貯まってバッジをGET！\nみんなの力でもっとおトクに。",
-    bg: "from-green-400 to-emerald-400",
+    bg: "from-emerald-500 to-teal-500",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function Onboarding({ onComplete }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] bg-white flex flex-col">
+    <div className="fixed inset-0 z-[200] bg-background flex flex-col">
       {/* スキップ */}
       <div className="flex justify-end p-4">
         <button
@@ -81,7 +81,7 @@ export default function Onboarding({ onComplete }: Props) {
         ) : (
           /* ニックネーム設定 */
           <div key="nickname" className="animate-onboard text-center max-w-sm w-full">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-orange-400
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-cyan-400
                             flex items-center justify-center mx-auto mb-8 shadow-lg">
               <span className="text-6xl">👋</span>
             </div>

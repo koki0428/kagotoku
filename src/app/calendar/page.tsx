@@ -281,7 +281,7 @@ export default function CalendarPage() {
         <button
           onClick={() => receiptCameraRef.current?.click()}
           disabled={scanning}
-          className="w-full bg-gradient-to-r from-primary to-orange-400 text-white
+          className="w-full gradient-btn text-white
                      rounded-2xl py-3.5 font-bold text-sm shadow-md
                      hover:opacity-90 active:scale-[0.98] transition-all
                      flex items-center justify-center gap-2
@@ -559,9 +559,9 @@ export default function CalendarPage() {
             {(monthTotal > 0 || prevMonthTotal > 0) && (
               <section className={`rounded-2xl shadow-sm border p-4 text-center ${
                 prevMonthTotal > 0 && monthTotal <= prevMonthTotal
-                  ? "bg-gradient-to-r from-green-50 to-emerald-50 border-accent/30"
+                  ? "bg-accent/10 border-accent/20"
                   : prevMonthTotal > 0
-                    ? "bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200"
+                    ? "bg-amber-500/10 border-amber-500/20"
                     : "bg-card-bg border-border"
               }`}>
                 <h2 className="font-bold text-sm mb-2">
@@ -570,7 +570,7 @@ export default function CalendarPage() {
                 {prevMonthTotal > 0 ? (
                   <>
                     <p className={`text-2xl font-bold ${
-                      monthTotal <= prevMonthTotal ? "text-accent" : "text-orange-600"
+                      monthTotal <= prevMonthTotal ? "text-accent" : "text-amber-400"
                     }`}>
                       {monthTotal <= prevMonthTotal
                         ? `¥${(prevMonthTotal - monthTotal).toLocaleString()} 節約！`
