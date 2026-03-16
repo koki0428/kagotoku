@@ -452,47 +452,48 @@ export default function Home() {
         {/* ===== 検索フォーム ===== */}
         <div className="bg-card-bg rounded-2xl shadow-md p-4 border border-border/50
                         animate-float-up" style={{ animationDelay: "0.4s" }}>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="商品名で価格をさがす..."
-              className="flex-1 border border-border rounded-xl px-4 py-3 text-base bg-background
+              className="min-w-0 flex-1 border border-border rounded-xl px-3 py-2.5 text-sm bg-background
                          focus:outline-none focus:ring-2 focus:ring-primary/40
                          placeholder:text-muted/50"
             />
             <button
               onClick={() => cameraRef.current?.click()}
               disabled={recognizing}
-              className="border border-border bg-background px-3 py-3 rounded-xl
-                         hover:border-primary hover:text-primary transition-colors
-                         disabled:opacity-40"
+              className="shrink-0 w-10 h-10 flex items-center justify-center border border-border
+                         bg-background rounded-xl hover:border-primary hover:text-primary
+                         transition-colors disabled:opacity-40"
               title="写真で商品を認識"
             >
               {recognizing ? (
-                <span className="inline-block w-5 h-5 border-2 border-primary border-t-transparent
+                <span className="inline-block w-4 h-4 border-2 border-primary border-t-transparent
                                  rounded-full animate-spin" />
               ) : (
-                <Camera className="w-5 h-5" />
+                <Camera className="w-4 h-4" />
               )}
             </button>
             <button
               onClick={() => setShowBarcode(true)}
-              className="border border-border bg-background px-3 py-3 rounded-xl
-                         hover:border-primary hover:text-primary transition-colors"
+              className="shrink-0 w-10 h-10 flex items-center justify-center border border-border
+                         bg-background rounded-xl hover:border-primary hover:text-primary
+                         transition-colors"
               title="バーコードスキャン"
             >
-              <ScanBarcode className="w-5 h-5" />
+              <ScanBarcode className="w-4 h-4" />
             </button>
             <button
               ref={searchBtnRef}
               onClick={(e) => { handleRipple(e); handleSearch(); }}
               disabled={searching}
-              className="ripple-btn bg-primary text-white px-5 py-3 rounded-xl font-medium
-                         hover:bg-primary-hover active:scale-95 transition-all shadow-sm
-                         disabled:opacity-60"
+              className="ripple-btn shrink-0 bg-primary text-white px-4 py-2.5 rounded-xl
+                         text-sm font-medium hover:bg-primary-hover active:scale-95
+                         transition-all shadow-sm disabled:opacity-60"
             >
               {searching ? "..." : "さがす"}
             </button>

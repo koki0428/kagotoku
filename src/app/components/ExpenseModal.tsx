@@ -41,14 +41,22 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
       const isKb = vv.height < window.innerHeight * 0.75;
       setKeyboardOpen(isKb);
       if (modalRef.current) {
-        modalRef.current.style.maxHeight = isKb
-          ? `${vv.height - 20}px`
-          : "";
+        if (isKb) {
+          modalRef.current.style.maxHeight = `${vv.height - 20}px`;
+          modalRef.current.style.bottom = `${window.innerHeight - vv.height - vv.offsetTop}px`;
+        } else {
+          modalRef.current.style.maxHeight = "";
+          modalRef.current.style.bottom = "";
+        }
       }
     };
 
     vv.addEventListener("resize", handleResize);
-    return () => vv.removeEventListener("resize", handleResize);
+    vv.addEventListener("scroll", handleResize);
+    return () => {
+      vv.removeEventListener("resize", handleResize);
+      vv.removeEventListener("scroll", handleResize);
+    };
   }, []);
 
   void refreshKey;
@@ -133,7 +141,7 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
       <div
         ref={modalRef}
         className={`relative w-full max-w-lg bg-card-bg rounded-t-3xl sm:rounded-2xl
-                    animate-slide-up max-h-[70vh] flex flex-col transition-all
+                    animate-slide-up max-h-[60vh] flex flex-col transition-all
                     ${keyboardOpen ? "mb-0" : ""}`}
       >
         {/* ヘッダー（固定） */}
@@ -271,7 +279,8 @@ export default function ExpenseModal({ date, onClose, onSaved }: Props) {
 
         {/* 送信ボタン（固定フッター） */}
         <div className="shrink-0 px-5 pb-5 pt-2 border-t border-border/50 bg-card-bg
-                        rounded-b-none sm:rounded-b-2xl">
+                        rounded-b-none sm:rounded-b-2xl"
+             style={{ paddingBottom: keyboardOpen ? "env(safe-area-inset-bottom, 12px)" : undefined }}>
           <button
             onClick={handleSubmit}
             disabled={!productName.trim() || !price}
