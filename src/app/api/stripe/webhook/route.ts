@@ -3,19 +3,21 @@ import { getStripe } from "../../../lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+export const dynamic = "force-dynamic";
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 /** サブスクリプションの期間終了日を取得 */
 function getSubscriptionPeriodEnd(subscription: Stripe.Subscription): string {
-  // items.data[0].current_period_end から取得（新しいStripe API）
   const firstItem = subscription.items?.data?.[0];
   if (firstItem?.current_period_end) {
     return new Date(firstItem.current_period_end * 1000).toISOString();
   }
-  // フォールバック: 1ヶ月後
   const fallback = new Date();
   fallback.setMonth(fallback.getMonth() + 1);
   return fallback.toISOString();
@@ -39,6 +41,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  const supabase = getSupabase();
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
         });
         const expiresAt = getSubscriptionPeriodEnd(subscription as unknown as Stripe.Subscription);
 
-        await supabaseAdmin.from("profiles").update({
+        await supabase.from("profiles").update({
           is_premium: true,
           premium_expires_at: expiresAt,
           stripe_subscription_id: subscriptionId,
@@ -76,14 +80,14 @@ export async function POST(req: NextRequest) {
         const customerId = invoice.customer as string;
         const expiresAt = getSubscriptionPeriodEnd(subscription as unknown as Stripe.Subscription);
 
-        const { data: profile } = await supabaseAdmin
+        const { data: profile } = await supabase
           .from("profiles")
           .select("id")
           .eq("stripe_customer_id", customerId)
           .single();
 
         if (profile) {
-          await supabaseAdmin.from("profiles").update({
+          await supabase.from("profiles").update({
             is_premium: true,
             premium_expires_at: expiresAt,
           }).eq("id", profile.id);
@@ -96,7 +100,7 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        const { data: profile } = await supabaseAdmin
+        const { data: profile } = await supabase
           .from("profiles")
           .select("id")
           .eq("stripe_customer_id", customerId)
@@ -106,7 +110,7 @@ export async function POST(req: NextRequest) {
           const isActive = subscription.status === "active" || subscription.status === "trialing";
           const expiresAt = isActive ? getSubscriptionPeriodEnd(subscription) : null;
 
-          await supabaseAdmin.from("profiles").update({
+          await supabase.from("profiles").update({
             is_premium: isActive,
             premium_expires_at: expiresAt,
             stripe_subscription_id: isActive ? subscription.id : null,

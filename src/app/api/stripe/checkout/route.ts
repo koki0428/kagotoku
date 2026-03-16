@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe, getOrCreatePriceId } from "../../../lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+export const dynamic = "force-dynamic";
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,8 +18,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "ログインが必要です" }, { status: 401 });
     }
 
-    // 既存のStripe Customerを検索、なければ作成
-    const { data: profile } = await supabaseAdmin
+    const supabase = getSupabase();
+
+    const { data: profile } = await supabase
       .from("profiles")
       .select("stripe_customer_id")
       .eq("id", userId)
@@ -30,7 +35,7 @@ export async function POST(req: NextRequest) {
       });
       customerId = customer.id;
 
-      await supabaseAdmin
+      await supabase
         .from("profiles")
         .update({ stripe_customer_id: customerId })
         .eq("id", userId);
